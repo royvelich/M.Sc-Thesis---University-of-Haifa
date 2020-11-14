@@ -1,0 +1,8 @@
+\chapter{Autoquads}
+
+\subsubsection{Quad Distortion}
+The fulfilment of the Integer Grid Map conditions do guarantee that the isolines of the 2D Cartesian grid forms a valid quad-mesh on the 3D mesh's surface, however, we do have to consider at what cost. There are many possible Integer Grid Maps that transform a given triangle-mesh into a quad-mesh, amongst which we would like to pick the one that satisfies our desired set of requirements (for example, number of singular points and their locations, and tracing certain geometric features of the original mesh). In order  to meet this desiderata, we have to pay with shape distortion of the quads that make up the output quad-mesh. Ultimately, we would like to find a map that fits our needs and minimizes the quads distortion. To minimize the distortion of quads which are formed by the isolines, we would like to directly minimize the distortion of triangles on the domain. To minimize triangle distortion, we use the symmetric dirichlet energy \cite{10.1145/2766947}, which prevents triangle flips. The symmetric dirichlet penalty function is given as follows:
+$$
+P_{\mathrm{dirichlet}}\left(t_i\right) = \norm{J\left(t_i\right)}_F^2 + \norm{J^{-1}\left(t_i\right)}_F^2 \nonumber
+$$
+Where $J\left(t_i\right)$ is the Jacobian of the mapping of triangle $t_i$ and $\norm{\cdot}_F$ is the Frobenius norm.
