@@ -133,6 +133,27 @@ Where $\mathrm{x}\big(u\big)$ and $\mathrm{y}\big(u\big)$ represent the domain c
 \begin{figure}[ht]
 \centering
 \includegraphics[width=16cm]{figures/singular_points/singular_points_penalty_function_minimum.png}
-\caption[Singular-Points Penalty Function Global Minimum Example]{An example where the singular-points penalty function converges to a local minimum. The red point on the mesh's surface represents a singular point of valence 3 (with respect to the black isolines), composed of a 7-facets triangle-fan. The corresponding triangle-soup on the parametrization domain satisfies the requirement that all twin-vertices of the singular points are located on integer grind points.}
+\caption[Singular-Points Penalty Function Global Minimum Example]{An example where the singular-points penalty function converges to a local minimum, when applied to a single singular-point. The red point on the mesh's surface represents a singular point of valence 3 (with respect to the black isolines), composed of a 7-facets blue triangle-fan. The corresponding triangle-soup on the parametrization domain satisfies the requirement that all twin-vertices of the singular-point are located on integer grid points. The sum of angles, adjacent to the group of twin-vertices, has a non-zero angular defect of $\frac{\pi}{2}$.}
 \label{fig:singular_points_penalty_minimum}
 \end{figure}
+\subsection{The Consistent Orientation and Quad Distortion Conditions' Objective Functions}
+In this subsection, we denote by $J\left(f_i\right)$ the Jacobian of the linear part of the affine mapping of triangle $f_i$ on the parametrization domain. Inspired by \cite{Smith:2015} and \cite{Poranne:Autocuts:2017}, we express both the consistent-orientation condition and the requirement to minimize triangle distortion on the domain, by the following penalty function:
+\begin{equation}\label{eq:orientation_and_distortion_penalty}
+\begin{split}
+P_{\mathrm{dirichlet}}\left(f_i\right) = P_{\mathrm{distortion}}\left(f_i\right) + P_{\mathrm{orientation}}\left(f_i\right)
+\end{split}
+\end{equation}
+Where the left term is given by $P_{\mathrm{distortion}}\left(f_i\right) = \norm{J\left(f_i\right)}_F^2$ , the right term is given by $P_{\mathrm{orientation}}\left(f_i\right) = \norm{J\left(f_i\right)^{-1}}_F^2$, and $\norm{\cdot}_F^2$ is the squared Frobenius norm. It is known that for $A \in \mathbb{R}_{n \times n}$, the Frobenius norm of $A$ is a function of its singular values given by $\norm{A}_F^2 = \sqrt{\sum_{i=1}^{n} \sigma_i^2}$. Therefore, since $J\left(f_i\right) \in \mathbb{R}_{2 \times 2}$, we can rewrite $P_{\mathrm{dirichlet}}$ as follows:
+\begin{equation}\label{eq:orientation_and_distortion_penalty_explicit}
+\begin{split}
+P_{\mathrm{dirichlet}}\left(f_i\right) = \sigma^2_1 + \sigma^2_2 + \sigma^{-2}_1 +\sigma^{-2}_2
+\end{split}
+\end{equation}
+Where $\sigma_1$ and $\sigma_2$ are the two singular values of $J\left(f_i\right)$. Given that the mapping is initialized such that $\sigma_i > 0$, the dirichlet penalty function will prevent triangle flips since $\sigma^{-2}_i \xrightarrow[\sigma_i \to 0^+]{} \infty$, for $i \in \left\{1,2\right\}$. Moreover, the dirichlet penalty function is minimized when the Jacobian induce an isometric mapping, since its global minimum is achieved at $\sigma_1 = 1$ and $\sigma_2 = 1$. Figure \ref{fig:dirichlet_penalty_function} illustrate the dirichlet penalty function for a range of $\sigma_1$ and $\sigma_2$ values.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=16cm]{figures/dirichlet/symmetric_dirichlet_penalty_function.png}
+\caption[The Symmetric Dirichlet Penalty Function]{On the left, a perspective view of the dirichlet penalty function is plotted. As can be seen, "walls" are formed along the positive $\sigma_1 = 0$ and $\sigma_2 = 0$ half-lines, infinitely penalizing an attempt to cross into an adjacent quadrant. On the right, a top view of the dirichlet penalty function is plotted, clearly showing that its global minimum is achieved at $\sigma_1 = 1$ and $\sigma_2 = 1$.}
+\label{fig:dirichlet_penalty_function}
+\end{figure}
+\subsection{The Main Objective Function}
