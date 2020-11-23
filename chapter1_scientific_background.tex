@@ -19,6 +19,7 @@ Polygonal meshes are discrete representations of 2D manifold embedded in 3D eucl
 \label{fig:tri_mesh_vs_quad_mesh}
 \end{figure}
 \subsection{Triangle Soup}
+\label{sec:triangle_soup}
 A \emph{triangle soup} is a formalization framework for describing a mapping of 2D manifold embedded in 3D onto the 2D Euclidean plane. In this formalization, every edge in the original mesh is treated as a cut seam, and therefore the input triangle-mesh is separated into individual triangles which are mapped onto the 2D domain.
 
 \noindent Given that the input triangle-mesh is manifested as a tuple $M = (F,E,V)$, where $F$ is the set of facets, $E$ is the set of edges, and $V$ is the set of vertices, its triangle soup is given by $M_s = (F_s,E_s,V_s)$, where $\abs{F_s} = \abs{F}$, $\abs{E_s} = 2\abs{E} - \abs{E_{\partial M}}$, $\abs{V_s} = \sum_{v \in V} \mathrm{deg}(v) \cdot\abs{V}$, and $E_{\partial M}$ is the set of edges on the boundary of $M$ (if exists). Given a vertex $v_i$ of valence $k$ on $M$, and the triangle-fan adjacent to it (which constitutes a surface patch), we make the following notations:

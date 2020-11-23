@@ -77,7 +77,7 @@ The seamless condition can be expressed by three smooth objective (penalty) func
 We define $P_{angle}$ as follows:
 \begin{equation}\label{eq:angle_penalty}
 \begin{split}
-P_{angle}\left(e_i,e_j\right) = \mathrm{sin} \bigg( 4\Big(\theta\left(e_i\right) - \theta\left(e_j\right)\Big) - \frac{\pi}{2}\bigg) + 1
+P_{\mathrm{angle}}\left(e_i,e_j\right) = \mathrm{sin} \bigg( 4\Big(\theta\left(e_i\right) - \theta\left(e_j\right)\Big) - \frac{\pi}{2}\bigg) + 1
 \end{split}
 \end{equation}
 Where $\theta\left(e_k\right) = \mathrm{atan2}\Big(\mathrm{y}\left(v_k^2\right) - \mathrm{y}\left(v_k^1\right), \mathrm{x}\left(v_k^2\right) - \mathrm{x}\left(v_k^1\right)\Big)$ is the angle formed by half-edge $k$ with the positive \emph{x-axis} direction, when treated as a vector based at $v_k^1$ and heading $v_k^2$, for $k \in \left\{i,j\right\}$. Therefore, the expression $\theta\left(e^i\right) - \theta\left(e^j\right)$ yields the signed angle between the two half-edges. Figure \ref{fig:angle_penalty} shows a plot of the angle penalty function for a range of $\theta$ values. It is easy to see that the angle penalty is minimized when the angle discrepancy between the two half-edges is an integer multiple of $\frac{\pi}{2}$, as required by the seamless condition. Please note, equation \ref{eq:angle_penalty} yields only non-negative values due to the introduction of the $+1$ term.
@@ -91,7 +91,7 @@ Where $\theta\left(e_k\right) = \mathrm{atan2}\Big(\mathrm{y}\left(v_k^2\right) 
 We define the length penalty function $P_{length}$ as follows:
 \begin{equation}\label{length_penalty}
 \begin{split}
-P_{length}\left(e_i,e_j\right) = \left(\norm{e_i}_2^2 - \norm{e_j}_2^2\right)^2
+P_{\mathrm{length}}\left(e_i,e_j\right) = \left(\norm{e_i}_2^2 - \norm{e_j}_2^2\right)^2
 \end{split}
 \end{equation}
 The length penalty measures the Euclidean length discrepancy between the two half-edges. It is a non-convex function (However, its Hessian is positive semi-definite almost everywhere) with multiple global minimum points associated with the function value of $0$. Therefore, It is easy to see that the length penalty is minimized when the length discrepancy between the two half-edges is absolutely zero, as required by the seamless condition. Figure \ref{fig:length_penalty} shows a plots of the length penalty function for a range of $\norm{e_i}_2^2$ and $\norm{e_j}_2^2$ values.
@@ -106,21 +106,21 @@ The length penalty measures the Euclidean length discrepancy between the two hal
 We define the translation penalty function $P_{translation}$ as follows:
 \begin{equation}\label{eq:translation_penalty}
 \begin{split}
-P_{translation}\left(e_i,e_j\right) = \mathrm{sin} \Big( 2\pi\cdot\Delta_x\big(e_i,e_j\big) - \frac{\pi}{2}\Big) + \mathrm{sin} \Big( 2\pi\cdot\Delta_y\big(e_i,e_j\big) - \frac{\pi}{2}\Big) + 2
+P_{\mathrm{translation}}\left(e_i,e_j\right) = \mathrm{sin} \Big( 2\pi\cdot\Delta_x\big(e_i,e_j\big) - \frac{\pi}{2}\Big) + \mathrm{sin} \Big( 2\pi\cdot\Delta_y\big(e_i,e_j\big) - \frac{\pi}{2}\Big) + 2
 \end{split}
 \end{equation}
 Where $\Delta_x\big(e_i,e_j\big) = \mathrm{x}\left(v_i^1\right) - \mathrm{x}\left(v_j^1\right)$ and $\Delta_y\big(e_i,e_j\big) = \mathrm{y}\left(v_i^1\right) - \mathrm{y}\left(v_j^1\right)$ represent the Manhattan distance between the two twin-vertices $v^i_1$ and $v^j_1$, which is also, implicitly, the Manhattan distance between the two half-edges. Since the two sine terms in equation \ref{eq:translation_penalty} achieve their minimum value only for integer $\Delta_x$ and $\Delta_y$, it means that the function penalize non-integer Manhattan distances. Therefore, it is easy to see that the translation penalty is minimized when the two twin-vertices are integer distance apart, as required by the seamless condition. Figure \ref{fig:translation_penalty} shows a plot of the translation penalty function for a range of $\Delta_x$ and $\Delta_y$ values. Please note, equation \ref{eq:translation_penalty} yields only non-negative values due to the introduction of the $+2$ term.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=15cm]{figures/seamless/translation_penalty_function.png}
-\caption[The Translation Penalty Function]{A plot of the translation penalty function for a range of values on the domain given by $\left[-2:2, -2:2\right]$. As can be seen, global minimum points are located at integer locations, which represent integer translations.}
+\caption[The Translation Penalty Function]{A plot of the translation penalty function for a range of $\Delta_x$ and $\Delta_y$ values. As can be seen, global minimum points are located at integer locations, which represent integer translations.}
 \label{fig:translation_penalty}
 \end{figure}
 \subsection{The Singular-Points Condition's Objective Function}
 The singular-points penalty function is applied on groups of twin-vertices on the parametrization domain, with non-zero angular defect (as defined in subsection \ref{label:singular_points_cond}). Given a group $V$ of twin-vertices that correspond to a singular point, the singular-points penalty function applied on that group is defined as follows:
 \begin{equation}\label{eq:singular_points_penalty}
 \begin{split}
-P_{singular}\left(V\right) = \sum_{u \in V} \bigg( \mathrm{sin} \Big( 2\pi\cdot\mathrm{x}\big(u\big) - \frac{\pi}{2}\Big) + \mathrm{sin} \Big( 2\pi\cdot\mathrm{y}\big(u\big) - \frac{\pi}{2}\Big) + 2 \bigg)
+P_{\mathrm{singular}}\left(V\right) = \sum_{u \in V} \bigg( \mathrm{sin} \Big( 2\pi\cdot\mathrm{x}\big(u\big) - \frac{\pi}{2}\Big) + \mathrm{sin} \Big( 2\pi\cdot\mathrm{y}\big(u\big) - \frac{\pi}{2}\Big) + 2 \bigg)
 \end{split}
 \end{equation}
 Where $\mathrm{x}\big(u\big)$ and $\mathrm{y}\big(u\big)$ represent the domain coordinates of a twin-vertex in $V$. Since the two sine terms in equation \ref{eq:singular_points_penalty} achieve their minimum value only for integer $\mathrm{x}\big(u\big)$ and $\mathrm{y}\big(u\big)$, it means that it penalize non-integer locations of singular twin-vertices. Therefore, it is easy to see that the translation penalty is minimized when \textbf{all} twin-vertices in $V$ are located on integer locations, as required by the singular-points condition. Please note, equation \ref{eq:singular_points_penalty} yields only non-negative values due to the introduction of the $+1$ term for each sine term. Figure \ref{fig:singular_points_penalty_sine_term} shows a plot of a single sine term from the singular-points penalty function for a range of $\mathrm{x}$ (or $\mathrm{y}$) values. Figure \ref{fig:singular_points_penalty_minimum} illustrates an example where the penalty function converge to a local minimum, where all twin-vertices located at grid-point locations.
@@ -157,3 +157,15 @@ Where $\sigma_1$ and $\sigma_2$ are the two singular values of $J\left(f_i\right
 \label{fig:dirichlet_penalty_function}
 \end{figure}
 \subsection{The Main Objective Function}
+The main object function is a weighted sum of all penalty functions presented above, when applied to all target domain elements. It is given as follows:
+\begin{equation}\label{eq:main_objective_function}
+\begin{split}
+P_{\mathrm{main}}\left(M_s\right) = &\underbrace{\sum_{e_i \sim e_j} \Big(w_{\mathrm{angle}} \cdot P_{\mathrm{angle}}\left(e_i,e_j\right) + w_{\mathrm{length}} \cdot P_{\mathrm{length}}\left(e_i,e_j\right) + w_{\mathrm{trans}} \cdot P_{\mathrm{trans}}\left(e_i,e_j\right)\Big)}_{\text{Weighted Seamless Condition}} + \\
+&\underbrace{w_{\mathrm{singular}} \cdot \sum_{V_i} \Big(P_{\mathrm{singular}}\left(V_i\right)\Big)}_{\text{Weighted Singular Points Condition}} +
+\\
+&\underbrace{w_{\mathrm{dirichlet}} \cdot \sum_{f_i} \Big(A_{f_i} \cdot P_{\mathrm{dirichlet}}\left(f_i\right)\Big)}_{\text{Weighted Orientation and Distortion Condition}}
+\end{split}
+\end{equation}
+Where $M_s = \left(V_s, E_s, F_s\right)$ is the domain triangle-soup of the input mesh (as explained in subsection \ref{sec:triangle_soup}), $e_i \sim e_j$ are two half-edges in $E_s$, $w_{\mathrm{angle}} \in \mathrm{R}$ is the angle penalty function weight, $w_{\mathrm{length}} \in \mathrm{R}$ is the length penalty function weight, $w_{\mathrm{trans}} \in \mathrm{R}$ is the translation penalty function weight, $V_i \subset V_s$ is a group of twin-vertices corresponding to a singular point, $w_{\mathrm{singular}} \in \mathrm{R}$ is the singular-points penalty function weight, $f_i \in F_s$ and $A_{f_i}$ are a triangle on the parametrization domain and its area , respectively, and $w_{\mathrm{dirichlet}} \in \mathrm{R}$ is the dirichlet penalty function weight. The tuple $\left(w_{\mathrm{angle}}, w_{\mathrm{length}}, w_{\mathrm{trans}}, w_{\mathrm{singular}}, w_{\mathrm{dirichlet}}\right)$ is controllable by the user and represents the core hyper-parameters of our system. The main objective function $P_{\mathrm{main}}$ is a non-convex multivariate scalar function, and our goal is to find a local minimum point that represents a configuration where the parametrization domain forms a valid quad-mesh when lifted onto the 3D input-mesh's surface.
+\section{Optimization}
+Since each individual penalty function is a smooth multivariate scalar function, we get that also $P_{\mathrm{main}}: \mathrm{R}^{}$ is a smooth multivariate scalar function. Therefore, its g
