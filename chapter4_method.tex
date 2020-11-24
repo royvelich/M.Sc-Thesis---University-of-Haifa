@@ -19,19 +19,19 @@ e_j = R^{r_{ij}}_{90^\circ}e_i + \vec{t}_{ij}
 Where  $r_{ij} \in \{0,1,2,3\}$ and $\vec{t}_{ij} \in \mathbb{Z}^2$. Figures \ref{fig:translation_req}, \ref{fig:angle_req} and \ref{fig:length_req} visually demonstrate the 3 requirements encoded by the seamless condition.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=9cm]{figures/seamless/translation.png}
+\includegraphics[width=6cm]{figures/seamless/translation.png}
 \caption[The Translation Requirement]{The transition function $g_{ij}$, described by equation \ref{transition_g_ij}, should impose an integer translation between the two half edges.}
 \label{fig:translation_req}
 \end{figure}
 \begin{figure}[ht]
 \centering
-\includegraphics[width=9cm]{figures/seamless/angle.png}
+\includegraphics[width=6cm]{figures/seamless/angle.png}
 \caption[The Angle Requirement]{The transition function $g_{ij}$, described by equation \ref{transition_g_ij}, should impose a $\frac{\pi}{2}k$ rotation between the two half edges.}
 \label{fig:angle_req}
 \end{figure}
 \begin{figure}[ht]
 \centering
-\includegraphics[width=9cm]{figures/seamless/length.png}
+\includegraphics[width=6cm]{figures/seamless/length.png}
 \caption[The Length Requirement]{The transition function $g_{ij}$, described by equation \ref{transition_g_ij}, should implicitly match the length of the two half edges.}
 \label{fig:length_req}
 \end{figure}
@@ -47,7 +47,7 @@ Having the right definitions, the singular-points condition require that all twi
 Figure \ref{fig:singular_points_req} demonstrate this condition visually.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=9cm]{figures/singular_points/singularity.png}
+\includegraphics[width=6cm]{figures/singular_points/singularity.png}
 \caption[The Singular Points Requirement]{Domain vertices that correspond to the same singular point should be positioned at a integer locations (grid points). In this illustration, the angular defect is $\frac{\pi}{2}$.}
 \label{fig:singular_points_req}
 \end{figure}
@@ -56,7 +56,7 @@ Figure \ref{fig:singular_points_req} demonstrate this condition visually.
 All triangles on the parameterization domain should have the same orientation. In other words, the transition function should not allow triangle flips. Figure \ref{fig:orientation_req} demonstrate this condition visually.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=9cm]{figures/orientation/orientation.png}
+\includegraphics[width=6cm]{figures/orientation/orientation.png}
 \caption[The Orientation Requirement]{The left triangle follows the same counter clockwise orientation as its image on the mesh's surface. On the other hand, the vertices of the triangle on the right follows a clockwise orientation.}
 \label{fig:orientation_req}
 \end{figure}
@@ -65,7 +65,7 @@ All triangles on the parameterization domain should have the same orientation. I
 The fulfilment of the integer-grid maps conditions do guarantee that the isolines of the 2D Cartesian grid forms a valid quad-mesh on the 3D mesh's surface, however, we do have to consider at what cost. There are many possible integer-grid maps that transform a given triangle-mesh into a quad-mesh. Amongst them, we would like to pick the one that satisfies our desired set of additional requirements. In order to meet this desiderata, we have to pay with shape distortion of the triangles that make up the parametrization domain. Ultimately, we would like to find a map that fits our needs and minimizes the triangles distortion, since a distorted triangle renders a distorted isoline on the input mesh surface, which eventually affects the quality of the extracted quads that correspond to that triangle. Therefore, in addition to the integer-grid maps conditions, we add an additional implicit core requirement, which demands to find a mapping that minimizes triangle distortion. Figure \ref{fig:distortion_req} demonstrate this requirement visually.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=9cm]{figures/distortion/distortion.png}
+\includegraphics[width=6cm]{figures/distortion/distortion.png}
 \caption[The Orientation Requirement]{The left triangle has a little shape distortion compared with its original version on the input-mesh's surface, in contrast with the right triangle, which clearly express a high shape distortion compared with its original version}
 \label{fig:distortion_req}
 \end{figure}
@@ -83,7 +83,7 @@ P_{\mathrm{angle}}\left(e_i,e_j\right) = \mathrm{sin} \bigg( 4\Big(\theta\left(e
 Where $\theta\left(e_k\right) = \mathrm{atan2}\Big(\mathrm{y}\left(v_k^2\right) - \mathrm{y}\left(v_k^1\right), \mathrm{x}\left(v_k^2\right) - \mathrm{x}\left(v_k^1\right)\Big)$ is the angle formed by half-edge $k$ with the positive \emph{x-axis} direction, when treated as a vector based at $v_k^1$ and heading $v_k^2$, for $k \in \left\{i,j\right\}$. Therefore, the expression $\theta\left(e^i\right) - \theta\left(e^j\right)$ yields the signed angle between the two half-edges. Figure \ref{fig:angle_penalty} shows a plot of the angle penalty function for a range of $\theta$ values. It is easy to see that the angle penalty is minimized when the angle discrepancy between the two half-edges is an integer multiple of $\frac{\pi}{2}$, as required by the seamless condition. Please note, equation \ref{eq:angle_penalty} yields only non-negative values due to the introduction of the $+1$ term.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=15cm]{figures/seamless/angle_penalty_function.png}
+\includegraphics[width=12cm]{figures/seamless/angle_penalty_function.png}
 \caption[The Angle Penalty Function]{A plot of the angle penalty function for a range of $\theta$ values. The penalty is zero for values of integer multiples of $\frac{\pi}{2}$, which represent a $\frac{\pi}{2}k$ rotation between the two half-edges, for $k \in \mathbb{N}$.}
 \label{fig:angle_penalty}
 \end{figure}
@@ -97,7 +97,7 @@ P_{\mathrm{length}}\left(e_i,e_j\right) = \left(\norm{e_i}_2^2 - \norm{e_j}_2^2\
 The length penalty measures the Euclidean length discrepancy between the two half-edges. It is a non-convex function (However, its Hessian is positive semi-definite almost everywhere) with multiple global minimum points associated with the function value of $0$. Therefore, It is easy to see that the length penalty is minimized when the length discrepancy between the two half-edges is absolutely zero, as required by the seamless condition. Figure \ref{fig:length_penalty} shows a plots of the length penalty function for a range of $\norm{e_i}_2^2$ and $\norm{e_j}_2^2$ values.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=12cm]{figures/seamless/length_penalty_function.png}
+\includegraphics[width=8cm]{figures/seamless/length_penalty_function.png}
 \caption[The Length Penalty Function]{A plot of the length penalty function. The penalty is zero along the $x=y$ line on the domain, where the lengths of the two half-edges are equal.}
 \label{fig:length_penalty}
 \end{figure}
@@ -112,7 +112,7 @@ P_{\mathrm{translation}}\left(e_i,e_j\right) = \mathrm{sin} \Big( 2\pi\cdot\Delt
 Where $\Delta_x\big(e_i,e_j\big) = \mathrm{x}\left(v_i^1\right) - \mathrm{x}\left(v_j^1\right)$ and $\Delta_y\big(e_i,e_j\big) = \mathrm{y}\left(v_i^1\right) - \mathrm{y}\left(v_j^1\right)$ represent the Manhattan distance between the two twin-vertices $v^i_1$ and $v^j_1$, which is also, implicitly, the Manhattan distance between the two half-edges. Since the two sine terms in equation \ref{eq:translation_penalty} achieve their minimum value only for integer $\Delta_x$ and $\Delta_y$, it means that the function penalize non-integer Manhattan distances. Therefore, it is easy to see that the translation penalty is minimized when the two twin-vertices are integer distance apart, as required by the seamless condition. Figure \ref{fig:translation_penalty} shows a plot of the translation penalty function for a range of $\Delta_x$ and $\Delta_y$ values. Please note, equation \ref{eq:translation_penalty} yields only non-negative values due to the introduction of the $+2$ term.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=15cm]{figures/seamless/translation_penalty_function.png}
+\includegraphics[width=13cm]{figures/seamless/translation_penalty_function.png}
 \caption[The Translation Penalty Function]{A plot of the translation penalty function for a range of $\Delta_x$ and $\Delta_y$ values. As can be seen, global minimum points are located at integer locations, which represent integer translations.}
 \label{fig:translation_penalty}
 \end{figure}
@@ -126,13 +126,13 @@ P_{\mathrm{singular}}\left(V\right) = \sum_{u \in V} \bigg( \mathrm{sin} \Big( 2
 Where $\mathrm{x}\big(u\big)$ and $\mathrm{y}\big(u\big)$ represent the domain coordinates of a twin-vertex in $V$. Since the two sine terms in equation \ref{eq:singular_points_penalty} achieve their minimum value only for integer $\mathrm{x}\big(u\big)$ and $\mathrm{y}\big(u\big)$, it means that it penalize non-integer locations of singular twin-vertices. Therefore, it is easy to see that the translation penalty is minimized when \textbf{all} twin-vertices in $V$ are located on integer locations, as required by the singular-points condition. Please note, equation \ref{eq:singular_points_penalty} yields only non-negative values due to the introduction of the $+1$ term for each sine term. Figure \ref{fig:singular_points_penalty_sine_term} shows a plot of a single sine term from the singular-points penalty function for a range of $\mathrm{x}$ (or $\mathrm{y}$) values. Figure \ref{fig:singular_points_penalty_minimum} illustrates an example where the penalty function converge to a local minimum, where all twin-vertices located at grid-point locations.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=16cm]{figures/singular_points/singular_points_penalty_function_sine_term.png}
+\includegraphics[width=13cm]{figures/singular_points/singular_points_penalty_function_sine_term.png}
 \caption[The Singular-Points Penalty Function (Single Sine Term)]{A plot of a single sine term of the singular-points penalty function for a range of $\mathrm{x}$ (or $\mathrm{y}$). As can be seen, global minimum points are located at integer locations, which represent integer grid coordinates.}
 \label{fig:singular_points_penalty_sine_term}
 \end{figure}
 \begin{figure}[ht]
 \centering
-\includegraphics[width=16cm]{figures/singular_points/singular_points_penalty_function_minimum.png}
+\includegraphics[width=12cm]{figures/singular_points/singular_points_penalty_function_minimum.png}
 \caption[Singular-Points Penalty Function Global Minimum Example]{An example where the singular-points penalty function converges to a local minimum, when applied to a single singular-point. The red point on the mesh's surface represents a singular point of valence 3 (with respect to the black isolines), composed of a 7-facets blue triangle-fan. The corresponding triangle-soup on the parametrization domain satisfies the requirement that all twin-vertices of the singular-point are located on integer grid points. The sum of angles, adjacent to the group of twin-vertices, has a non-zero angular defect of $\frac{\pi}{2}$.}
 \label{fig:singular_points_penalty_minimum}
 \end{figure}
@@ -168,4 +168,42 @@ P_{\mathrm{main}}\left(M_s\right) = &\underbrace{\sum_{e_i \sim e_j} \Big(w_{\ma
 \end{equation}
 Where $M_s = \left(V_s, E_s, F_s\right)$ is the domain triangle-soup of the input mesh (as explained in subsection \ref{sec:triangle_soup}), $e_i \sim e_j$ are two half-edges in $E_s$, $w_{\mathrm{angle}} \in \mathrm{R}$ is the angle penalty function weight, $w_{\mathrm{length}} \in \mathrm{R}$ is the length penalty function weight, $w_{\mathrm{trans}} \in \mathrm{R}$ is the translation penalty function weight, $V_i \subset V_s$ is a group of twin-vertices corresponding to a singular point, $w_{\mathrm{singular}} \in \mathrm{R}$ is the singular-points penalty function weight, $f_i \in F_s$ and $A_{f_i}$ are a triangle on the parametrization domain and its area , respectively, and $w_{\mathrm{dirichlet}} \in \mathrm{R}$ is the dirichlet penalty function weight. The tuple $\left(w_{\mathrm{angle}}, w_{\mathrm{length}}, w_{\mathrm{trans}}, w_{\mathrm{singular}}, w_{\mathrm{dirichlet}}\right)$ is controllable by the user and represents the core hyper-parameters of our system. The main objective function $P_{\mathrm{main}}$ is a non-convex multivariate scalar function, and our goal is to find a local minimum point that represents a configuration where the parametrization domain forms a valid quad-mesh when lifted onto the 3D input-mesh's surface.
 \section{Optimization}
-Since each individual penalty function is a smooth multivariate scalar function, we get that also $P_{\mathrm{main}}: \mathrm{R}^{}$ is a smooth multivariate scalar function. Therefore, its g
+Since each individual penalty function is a smooth multivariate scalar function, we get that also $P_{\mathrm{main}}: \mathbb{R}^{2\abs{V_s}} \xrightarrow[]{} \mathbb{R}$ is a smooth multivariate scalar function. It has $2\abs{V_s}$ variables, since there are $\abs{V_s}$ vertices, and each vertex has two coordinates. Therefore, its gradient $\nabla P_{\mathrm{main}}: \mathbb{R}^{2\abs{V_s}} \xrightarrow[]{} \mathbb{R}^{2\abs{V_s}}$ is given by:
+\begin{equation}\label{eq:main_objective_function_gradient}
+\begin{split}
+\nabla P_{\mathrm{main}}\left(M_s\right) = &\sum_{e_i \sim e_j} \Big(w_{\mathrm{angle}} \cdot \nabla P_{\mathrm{angle}}\left(e_i,e_j\right) + w_{\mathrm{length}} \cdot \nabla P_{\mathrm{length}}\left(e_i,e_j\right) + w_{\mathrm{trans}} \cdot \nabla P_{\mathrm{trans}}\left(e_i,e_j\right)\Big) + \\
+&w_{\mathrm{singular}} \cdot \sum_{V_i} \Big(\nabla P_{\mathrm{singular}}\left(V_i\right)\Big) +
+\\
+&w_{\mathrm{dirichlet}} \cdot \sum_{f_i} \Big(A_{f_i} \cdot \nabla P_{\mathrm{dirichlet}}\left(f_i\right)\Big)
+\end{split}
+\end{equation}
+By smoothness, we also get that the Hessian $\nabla^2 P_{\mathrm{main}}: \mathbb{R}^{2\abs{V_s}} \xrightarrow[]{} \mathbb{R}^{2\abs{V_s} \times 2\abs{V_s}}$ is given by:
+\begin{equation}\label{eq:main_objective_function_gradient}
+\begin{split}
+\nabla^2 P_{\mathrm{main}}\left(M_s\right) = &\sum_{e_i \sim e_j} \Big(w_{\mathrm{angle}} \cdot \nabla^2 P_{\mathrm{angle}}\left(e_i,e_j\right) + w_{\mathrm{length}} \cdot \nabla^2 P_{\mathrm{length}}\left(e_i,e_j\right) + w_{\mathrm{trans}} \cdot \nabla^2 P_{\mathrm{trans}}\left(e_i,e_j\right)\Big) + \\
+&w_{\mathrm{singular}} \cdot \sum_{V_i} \Big(\nabla^2 P_{\mathrm{singular}}\left(V_i\right)\Big) +
+\\
+&w_{\mathrm{dirichlet}} \cdot \sum_{f_i} \Big(A_{f_i} \cdot \nabla^2 P_{\mathrm{dirichlet}}\left(f_i\right)\Big)
+\end{split}
+\end{equation}
+In other words, to calculate the gradient and Hessian of $P_{\mathrm{main}}$, it is enough to derive the gradient and Hessian of each individual penalty function, apply them to each domain element, and use the same weighted sum to calculate the end result. Full derivations of the gradient and Hessian of each penalty function is available in Appendix \ref{appendix:a}.
+
+\noindent We find a local minimum of $P_{\mathrm{main}}$ by employing Newton's method with line-search. Given a set of input variables $V_s^i$ at the $i$th iteration, we solve the linear system of equations $\nabla^2 P_{\mathrm{main}}\left(V_s^i\right) \cdot d^i = -\nabla P_{\mathrm{main}}\left(V_s^i\right)$ in order to find the current direction of descent $d^i$. Next, perform a line-search, by iteratively searching for a scalar $\alpha^* > 0$ such that $P_{\mathrm{main}}\left(V_s^i + \alpha^* d_i\right) < P_{\mathrm{main}}\left(V_s^i\right)$. When found, we update the locations of the triangle-soup's vertices (the variables of our objective function) to $V_s^{i+1} = V_s^i + \alpha^* d_i$, and so it continues iteration after iteration, until convergence. The user can, at any moment in time, "play" with the problem's hyper-parameters, and steer the the optimization process to a better local minimum, according to his subjective requirements.
+
+\noindent Since a 3D mesh is essentially a graph, it is characterized by sparse relationships between its nodes (vertices). Therefore, the Hessian $\nabla^2 P_{\mathrm{main}}$ is a sparse square matrix, which induce a sparse linear system of equations. We exploit this fact by using a parallel sparse linear solver (PARDISO \cite{SCHENK200169}) to quickly compute the direction of descent at each iteration. 
+\section{Initialization}
+We cut the input triangle-mesh open by isometrically mapping its dual spanning tree to the parameterization plane as a triangle-soup. We first map an arbitrary initial triangle to the parameterization plane. Next, we map to the plane all adjacent triangles of the initial triangle, such that adjacent triangles on the mesh surface share an edge on the 2D domain. We continue this process for the next layer of neighbours, till we map the whole input mesh. Figure \ref{fig:initialization} visualize the initialization process.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=13cm]{figures/initialization.png}
+\caption[Triangle Soup Initialization]{An example of isometric map of the dual tree. The red triangle is chosen arbitrarily as the spanning tree root, and is isometrically mapped from the mesh onto the parametrization domain. Next, its immediate neighbours, the blue triangles, are copied isometrically onto the domain, such that adjacent edges on the mesh are adjacent also on the domain. The green triangles are the next layer of triangles to be copied, and so on until all mesh triangles are mapped.}
+\label{fig:initialization}
+\end{figure}
+\section{Graphic User Interface}
+We designed a proof-of-concept interactive tool which accepts an input triangle-mesh, and smoothly transform it into a quad-mesh by minimizing the main objective function, guided by the user's interaction with the system's hyper-parameters. The user-interface front-end is based on web-technologies, and thus can be easily extended and adapted to new scenarios and requirements. The tool's back-end is written in modern C++ and is using Intel's MKL PARDISO (PARallel DIrect SOlver) to factorize the main objective's Hessian matrix, and solve the sparse linear system of equations, taking advantage of a multicore CPU environment. A short introduction video is available in  \href{https://youtu.be/1zP5KO8EwHQ}{this} link, and the project's GitHub repository is available in \href{https://github.com/HaifaGraphics/RDS/tree/royv}{here}. Figure \ref{fig:gui} gives a short explanation of the user interface.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=15cm]{figures/gui.png}
+\caption[Graphic User Interface]{The basic elements of graphic user interface. [TOP] A split screen is displayed to the user, where its left pane renders the 3D surface of the input triangle-mesh, and the right pane renders the triangle-soup on the parametrization domain. The parametrization domain is tessellated with the Cartesian grid's isolines. The portion of the Cartesian grid covered by soup triangles is used as a texture that is mapped back onto the 3D mesh surface to form a quad-mesh. A monitor is transparently overlayed on top of the right pane to reflect the current state of each penalty function.  [BOTTOM] The user can pause/resume the optimization process, and control the weights of the penalty functions. The user can also control the spacing between the Cartesian grid's isolines, and thus control the quads size.}
+\label{fig:gui}
+\end{figure}
