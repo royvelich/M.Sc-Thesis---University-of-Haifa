@@ -1,5 +1,6 @@
 \chapter{Method}
-At its core, our method formulates the necessary and sufficient conditions for quadrangulating a triangle-mesh by parametrization (integer-grid maps \cite{bommes:hal-00862648}), as a smooth unconstrained optimization problem using periodic functions. Our main objective function is a weighted sum of smooth sub-objective functions (also can be regarded as penalty functions), of which their weights are controllable by the user. We believe that this approach is more suitable for 3D design and modeling tools since the quadrangulation process is continuous with the user constantly in the loop. This approach is also easily extensible by introducing additional smooth terms (sub-objectives) into the main objective, which can represent custom requirements of which the parameterization has to fulfill. Moreover, since the weights are controllable, the quadrangulation process can be executed in any desired order (e.g. achieve a seamless parametrization before handling singular points). That's why we decided to call our approach \emph{Smooth and Interactive Parametrization-Based Quadrangulation}: \emph{Smooth} because we're using a smooth objective, \emph{Interactive} because small changes are immediately reflected to the user, and \emph{Parametrization-Based} because we solve a global parametrization problem. This chapter is organized as following: In section \ref{integer-grid-maps} we describe in detail the notion of inter-grid maps. In section \ref{label:quad_distortion_cond} we briefly describe how to we cope with quad-distortion in order to maximize mesh quality.
+\label{chapter:method}
+At its core, our method formulates the necessary and sufficient conditions for quadrangulating a triangle-mesh by parametrization (integer-grid maps \cite{bommes:hal-00862648}), as a smooth unconstrained optimization problem using periodic functions. Our main objective function is a weighted sum of smooth sub-objective functions (also can be regarded as penalty functions), of which their weights are controllable by the user. We believe that this approach is more suitable for 3D design and modeling tools since the quadrangulation process is continuous with the user constantly in the loop. This approach is also easily extensible by introducing additional smooth terms (sub-objectives) into the main objective, which can represent custom requirements of which the parameterization has to fulfill. Moreover, since the weights are controllable, the quadrangulation process can be executed in any desired order (e.g. achieve a seamless parametrization before handling singular points). That's why we decided to call our approach \emph{Smooth and Interactive Parametrization-Based Quadrangulation}: \emph{Smooth} because we're using a smooth objective, \emph{Interactive} because small changes are immediately reflected to the user, and \emph{Parametrization-Based} because we solve a global parametrization problem. This chapter is organized as following: In section \ref{integer-grid-maps} we describe in detail the notion of integer-grid maps, and the necessary and sufficient conditions under which such maps forms a quad mesh on the 3D surface. In section \ref{section:quad_distortion_cond} we briefly describe how to we cope with quad-distortion in order to maximize mesh quality. In section \ref{section:smooth_objective_functions} we describe the formulation of the integer-grid maps conditions as smooth penalty functions. In section \ref{section:optimization} we derive the gradient and Hessian of our main objective function. In section \ref{section:initialization} we briefly describe how we initialize the optimization process by cutting the input mesh open into a triangle-soup on the parametrization domain, and in section \ref{section:graphic_user_interface} we briefly describe the implementation details and the main components of the graphic user interface we provide for the user.
 \section{Integer Grid Maps}
 \label{integer-grid-maps}
 The necessary and sufficient conditions for a parametrization mapping to form a valid quad mesh on the mesh's 3D surface are:
@@ -9,7 +10,7 @@ The necessary and sufficient conditions for a parametrization mapping to form a 
 \item Consistent Orientation Condition
 \end{enumerate}
 \subsection{Seamless Condition}
-\label{label:seamless_cond}
+\label{section:seamless_cond}
 The transition function $g_{ij}$ between two half-edges $e_i$ and $e_j$ on the parameterization domain that corresponds to the same surface edge that is part of a cut seam, has to be an integer-grid automorphism given by:
 \begin{equation}\label{transition_g_ij}
 \begin{split}
@@ -36,7 +37,7 @@ Where  $r_{ij} \in \{0,1,2,3\}$ and $\vec{t}_{ij} \in \mathbb{Z}^2$. Figures \re
 \label{fig:length_req}
 \end{figure}
 \subsection{Singular Points Condition}
-\label{label:singular_points_cond}
+\label{section:singular_points_cond}
 Before we define what the singular-points condition is, we first have to define how a singular vertex is characterized on the parametrization domain. A singular-vertex (valence $\neq 4$) on the mesh's surface, will be characterized on the parametrization domain by a non-zero angular defect. The angular defect is measured by $2\pi - \sum_{i=1}^k \theta_i$ and $\pi - \sum_{i=1}^k \theta_i$ for interior and boundary surface vertices, respectively, where $k$ is the number of twin-vertices on the the parametrization domain that correspond to the singular-vertex on the mesh's surface, and $\theta_i$ is the angle adjacent to twin-vertex $v_i$.
 Having the right definitions, the singular-points condition require that all twin-vertices of singular points will be located on integer locations. Formally, given the set $V$ of all twin-vertices on the domain the that correspond to the a singular vertex on the mesh's surface, we require that:
 \begin{equation}\label{eq:singular_points_cond}
@@ -52,7 +53,7 @@ Figure \ref{fig:singular_points_req} demonstrate this condition visually.
 \label{fig:singular_points_req}
 \end{figure}
 \subsection{Consistent Orientation Condition}
-\label{label:consistent_otrientation_cond}
+\label{section:consistent_otrientation_cond}
 All triangles on the parameterization domain should have the same orientation. In other words, the transition function should not allow triangle flips. Figure \ref{fig:orientation_req} demonstrate this condition visually.
 \begin{figure}[ht]
 \centering
@@ -61,7 +62,7 @@ All triangles on the parameterization domain should have the same orientation. I
 \label{fig:orientation_req}
 \end{figure}
 \section{Quad Distortion}
-\label{label:quad_distortion_cond}
+\label{section:quad_distortion_cond}
 The fulfilment of the integer-grid maps conditions do guarantee that the isolines of the 2D Cartesian grid forms a valid quad-mesh on the 3D mesh's surface, however, we do have to consider at what cost. There are many possible integer-grid maps that transform a given triangle-mesh into a quad-mesh. Amongst them, we would like to pick the one that satisfies our desired set of additional requirements. In order to meet this desiderata, we have to pay with shape distortion of the triangles that make up the parametrization domain. Ultimately, we would like to find a map that fits our needs and minimizes the triangles distortion, since a distorted triangle renders a distorted isoline on the input mesh surface, which eventually affects the quality of the extracted quads that correspond to that triangle. Therefore, in addition to the integer-grid maps conditions, we add an additional implicit core requirement, which demands to find a mapping that minimizes triangle distortion. Figure \ref{fig:distortion_req} demonstrate this requirement visually.
 \begin{figure}[ht]
 \centering
@@ -70,7 +71,8 @@ The fulfilment of the integer-grid maps conditions do guarantee that the isoline
 \label{fig:distortion_req}
 \end{figure}
 \section{Smooth Objective Functions}
-In this section, we present our smooth objective function formulations for Conditions \ref{label:seamless_cond}, \ref{label:singular_points_cond}, \ref{label:consistent_otrientation_cond} and requirement \ref{label:quad_distortion_cond} presented in the previous sections. Please note, in the following sections and subsections below, we denote by $\mathrm{x}\left(v\right)$, $\mathrm{y}\left(v\right)$ the $x$ and $y$ domain coordinates of a given domain vertex $v$.
+\label{section:smooth_objective_functions}
+In this section, we present our smooth objective function formulations for Conditions \ref{section:seamless_cond}, \ref{section:singular_points_cond}, \ref{section:consistent_otrientation_cond} and requirement \ref{section:quad_distortion_cond} presented in the previous sections. Please note, in the following sections and subsections below, we denote by $\mathrm{x}\left(v\right)$, $\mathrm{y}\left(v\right)$ the $x$ and $y$ domain coordinates of a given domain vertex $v$.
 \subsection{The Seamless Condition's Objective Functions}
 The seamless condition can be expressed by three smooth objective (penalty) functions $P_{angle}$, $P_{length}$ and $P_{translation}$, that penalize violations in angle, length and translation, respectively, for a given pair of half-edges. In the following three paragraphs, we define those tree penalty functions, and assume we're given two half-edges, in the parametrization domain, denoted by $e_i = \left(v_i^1,v_i^2\right)$ and $e_j = \left(v_j^1,v_j^2\right)$, where for for $k \in \left\{i,j\right\}$, $v_k^1$ and $v_k^2$ are the two domain vertices that constitutes half-edge $k$, and for $k \in \left\{1,2\right\}$, $v_i^k$ and $v_j^k$ are twin-vertices.
 \paragraph{Angle Penalty}
@@ -80,7 +82,7 @@ We define $P_{angle}$ as follows:
 P_{\mathrm{angle}}\left(e_i,e_j\right) = \mathrm{sin} \bigg( 4\Big(\theta\left(e_i\right) - \theta\left(e_j\right)\Big) - \frac{\pi}{2}\bigg) + 1
 \end{split}
 \end{equation}
-Where $\theta\left(e_k\right) = \mathrm{atan2}\Big(\mathrm{y}\left(v_k^2\right) - \mathrm{y}\left(v_k^1\right), \mathrm{x}\left(v_k^2\right) - \mathrm{x}\left(v_k^1\right)\Big)$ is the angle formed by half-edge $k$ with the positive \emph{x-axis} direction, when treated as a vector based at $v_k^1$ and heading $v_k^2$, for $k \in \left\{i,j\right\}$. Therefore, the expression $\theta\left(e^i\right) - \theta\left(e^j\right)$ yields the signed angle between the two half-edges. Figure \ref{fig:angle_penalty} shows a plot of the angle penalty function for a range of $\theta$ values. It is easy to see that the angle penalty is minimized when the angle discrepancy between the two half-edges is an integer multiple of $\frac{\pi}{2}$, as required by the seamless condition. Please note, equation \ref{eq:angle_penalty} yields only non-negative values due to the introduction of the $+1$ term.
+Where $\theta\left(e_k\right) = \mathrm{atan2}\Big(\mathrm{y}\left(v_k^2\right) - \mathrm{y}\left(v_k^1\right), \mathrm{x}\left(v_k^2\right) - \mathrm{x}\left(v_k^1\right)\Big)$ is the angle formed by half-edge $e_k = \left(v^1_k, v^2_k\right)$ with the positive \emph{x-axis} direction, when treated as a vector based at $v_k^1$ and heading $v_k^2$, for $k \in \left\{i,j\right\}$. Therefore, the expression $\theta\left(e^i\right) - \theta\left(e^j\right)$ yields the signed angle between the two half-edges. Figure \ref{fig:angle_penalty} shows a plot of the angle penalty function for a range of $\theta$ values. It is easy to see that the angle penalty is minimized when the angle discrepancy between the two half-edges is an integer multiple of $\frac{\pi}{2}$, as required by the seamless condition. Please note, equation \ref{eq:angle_penalty} yields only non-negative values due to the introduction of the $+1$ term.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=12cm]{figures/seamless/angle_penalty_function.png}
@@ -117,7 +119,7 @@ Where $\Delta_x\big(e_i,e_j\big) = \mathrm{x}\left(v_i^1\right) - \mathrm{x}\lef
 \label{fig:translation_penalty}
 \end{figure}
 \subsection{The Singular-Points Condition's Objective Function}
-The singular-points penalty function is applied on groups of twin-vertices on the parametrization domain, with non-zero angular defect (as defined in subsection \ref{label:singular_points_cond}). Given a group $S$ of twin-vertices that correspond to a singular point, the singular-points penalty function applied on that group is defined as follows:
+The singular-points penalty function is applied on groups of twin-vertices on the parametrization domain, with non-zero angular defect (as defined in subsection \ref{section:singular_points_cond}). Given a group $S$ of twin-vertices that correspond to a singular point, the singular-points penalty function applied on that group is defined as follows:
 \begin{equation}\label{eq:singular_points_penalty}
 \begin{split}
 P_{\mathrm{singular}}\left(S\right) = \sum_{u \in S} \bigg( \mathrm{sin} \Big( 2\pi\cdot\mathrm{x}\big(u\big) - \frac{\pi}{2}\Big) + \mathrm{sin} \Big( 2\pi\cdot\mathrm{y}\big(u\big) - \frac{\pi}{2}\Big) + 2 \bigg)
@@ -168,6 +170,7 @@ P_{\mathrm{main}}\left(M_s\right) = &\underbrace{\sum_{e_i \sim e_j} \Big(w_{\ma
 \end{equation}
 Where $M_s = \left(V_s, E_s, F_s\right)$ is the domain triangle-soup of the input mesh (as explained in subsection \ref{sec:triangle_soup}), $e_i \sim e_j$ are two half-edges in $E_s$, $w_{\mathrm{angle}} \in \mathrm{R}$ is the angle penalty function weight, $w_{\mathrm{length}} \in \mathrm{R}$ is the length penalty function weight, $w_{\mathrm{trans}} \in \mathrm{R}$ is the translation penalty function weight, $S_i \subset V_s$ is a group of twin-vertices corresponding to a singular point, $w_{\mathrm{singular}} \in \mathrm{R}$ is the singular-points penalty function weight, $f_i \in F_s$ and $A_{f_i}$ are a triangle on the parametrization domain and its area , respectively, and $w_{\mathrm{dirichlet}} \in \mathrm{R}$ is the dirichlet penalty function weight. The tuple $\left(w_{\mathrm{angle}}, w_{\mathrm{length}}, w_{\mathrm{trans}}, w_{\mathrm{singular}}, w_{\mathrm{dirichlet}}\right)$ is controllable by the user and represents the core hyper-parameters of our system. The main objective function $P_{\mathrm{main}}$ is a non-convex multivariate scalar function, and our goal is to find a local minimum point that represents a configuration where the parametrization domain forms a valid quad-mesh when lifted onto the 3D input-mesh's surface.
 \section{Optimization}
+\label{section:optimization}
 Since each individual penalty function is a smooth multivariate scalar function, we get that also $P_{\mathrm{main}}: \mathbb{R}^{2\abs{V_s}} \xrightarrow[]{} \mathbb{R}$ is a smooth multivariate scalar function. It has $2\abs{V_s}$ variables, since there are $\abs{V_s}$ vertices, and each vertex has two coordinates. Therefore, its gradient $\nabla P_{\mathrm{main}}: \mathbb{R}^{2\abs{V_s}} \xrightarrow[]{} \mathbb{R}^{2\abs{V_s}}$ is given by:
 \begin{equation}\label{eq:main_objective_function_gradient}
 \begin{split}
@@ -194,6 +197,7 @@ In other words, to calculate the gradient and Hessian of $P_{\mathrm{main}}$, it
 
 \noindent Please note, in order for $d_i$ to be a descent direction, we have to make sure that $\nabla^2 P_{\mathrm{main}}\left(V_s^i\right)$ is positive semi-definite. Given the singular-value decomposition of an indefinite square matrix $A$ to be $A = USV^T$, its closest positive semi-definite matrix, in the Frobenius norm sense, is the matrix $\hat{A} = U\hat{S}V^T$ when $\hat{S}$ equal $S$ up to negative singular values, which are replaced with zeros. Therefore, since $\nabla^2 P_{\mathrm{main}}\left(V_s^i\right)$ is most likely to be an indefinite matrix, since we're solving a non-convex problem, we would like to find its closest positive semi-definite matrix, as use it as a replacement for the original Hessian. However, since the time complexity of singular-value decomposition is cubic, it become quite costly even for small meshes of a few hundreds vertices. Therefore, a more efficient approach would be to replace the Hessian of each individual penalty function with its closest positive semi-definite version. That way, we would have to compute singular-value decompositions of fixed sized matrices (the seamless condition's penalty functions accept a vector of size 8 as input, and therefore their Hessian is of size $8 \times 8$). Since the sum of positive semi-definite matrices yields a positive semi-definite matrix, we are guaranteed to get a positive semi-definite when summing-up the tweaked Hessians of all individual penalty functions.
 \section{Initialization}
+\label{section:initialization}
 We cut the input triangle-mesh open by isometrically mapping its dual spanning tree to the parameterization plane as a triangle-soup. We first map an arbitrary initial triangle to the parameterization plane. Next, we map to the plane all adjacent triangles of the initial triangle, such that adjacent triangles on the mesh surface share an edge on the 2D domain. We continue this process for the next layer of neighbours, till we map the whole input mesh. Figure \ref{fig:initialization} visualize the initialization process.
 \begin{figure}[ht]
 \centering
@@ -202,6 +206,7 @@ We cut the input triangle-mesh open by isometrically mapping its dual spanning t
 \label{fig:initialization}
 \end{figure}
 \section{Graphic User Interface}
+\label{section:graphic_user_interface}
 We designed a proof-of-concept interactive tool which accepts an input triangle-mesh, and smoothly transform it into a quad-mesh by minimizing the main objective function, guided by the user's interaction with the system's hyper-parameters. The user-interface front-end is based on web-technologies, and thus can be easily extended and adapted to new scenarios and requirements. The tool's back-end is written in modern C++ and is using Intel's MKL PARDISO (PARallel DIrect SOlver) to factorize the main objective's Hessian matrix, and solve the sparse linear system of equations, taking advantage of a multicore CPU environment. A short introduction video is available in  \href{https://youtu.be/1zP5KO8EwHQ}{this} link, and the project's GitHub repository is available \href{https://github.com/HaifaGraphics/RDS/tree/royv}{here}. Figure \ref{fig:gui} gives a short explanation of the main components of the graphic user interface.
 \begin{figure}[ht]
 \centering
