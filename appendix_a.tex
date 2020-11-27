@@ -1,5 +1,6 @@
 \chapter{Polynomial Approximation}
 \label{appendix:a}
+\section{Piece-wise Polynomial Periodic Function}
 To make each Newton's method iteration more computationally efficient, and to simplify the gradient and Hessian derivations and the technical implementation details in general, we design a smooth periodic function $f_p: \mathbb{R} \xrightarrow[]{} \mathbb{R}$ with period $p$, that satisfies the following requirements for any $x \in \mathbb{R}$ and $k \in \mathbb{Z}$:
 \begin{equation}\label{eq:periodic_req}
 \begin{split}
@@ -27,25 +28,94 @@ g\left(x\right) = a_0 + a_1x + a_2x^2 + a_3x^3 + a_4x^4 + a_5x^5 = a^T \cdot \ma
 \end{split}
 \end{equation}
 Where $a = \left(a_0,a_1,a_2,a_3,a_4,a_5\right)^T$ and $\mathrm{x}\left(x\right) = \left(1,x,x^2,x^3,x^4,x^5\right)^T$.
-Solving the linear system of equations \ref{eq:system_of_equations} yields the desired coefficients tuple $a_*$. Therefore, we define $f_p\left(x\right)$ as follows:
+Solving the linear system of equations \ref{eq:system_of_equations} yields the desired coefficients vector $a_* = \left(a^*_0,a^*_1,a^*_2,a^*_3,a^*_4,a^*_5\right)^T$. Therefore, we define $f_p\left(x\right)$ as follows:
 \begin{equation}\label{eq:polynomial_6}
 \begin{split}
 f_p\left(x\right) = 
 \begin{cases} 
-  a_*^T \cdot \mathrm{x}\left(x\right) & x \in \left[0,p\right] \\
-  a_*^T \cdot \mathrm{x}\left(x \mod{p}\right) & x \notin \left[0,p\right]
+  g_*\left(x\right) & x \in \left[0,p\right] \\
+  g_*\left(x \mod{p}\right) & x \notin \left[0,p\right]
 \end{cases}
 \end{split}
 \end{equation}
-Figure \ref{fig:polynomial_periodic_function} visualize $f_p\left(x\right)$ for an arbitrary period.
+Where $g_*\left(x\right) = a_*^T \cdot \mathrm{x}\left(x\right)$. We call $f_p\left(x\right)$ a \emph{piece-wise polynomial periodic function}. Figure \ref{fig:polynomial_periodic_function} visualize $f_p\left(x\right)$ for an arbitrary period.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=12cm]{figures/periodic_function.png}
-\caption[Polynomial Periodic Function]{A plot of $f_p\left(x\right)$ in the interval $\left[-3p, 3p\right]$. As can be seen, $f_p\left(x\right)$ is a priodic function, where its roots are equally spaced with a distance $p$.}
+\caption[Piece-wise Polynomial Periodic Function]{A plot of $f_p\left(x\right)$ in the interval $\left[-3p, 3p\right]$. As can be seen, $f_p\left(x\right)$ is a priodic function, where its roots are equally spaced with a distance $p$.}
 \label{fig:polynomial_periodic_function}
 \end{figure}
+\section{First Derivative}
+The first derivative of $g_*\left(x\right)$ is given by:
+\begin{equation}\label{eq:polynomial_6}
+\begin{split}
+g'_*\left(x\right) = a^*_1 + 2a^*_2x + 3a^*_3x^2 + 4a^*_4x^3 + 5a^*_5x^4 = b_*^T \cdot \mathrm{x}\left(x\right)
+\end{split}
+\end{equation}
+Where $b_* = \left(a^*_1,2a^*_2,3a^*_3,4a^*_4,5a^*_5,0\right)^T$ and $\mathrm{x}\left(x\right) = \left(1,x,x^2,x^3,x^4,x^5\right)^T$. Therefore, we define $f'_p\left(x\right)$ is given as follows:
+\begin{equation}\label{eq:polynomial_6}
+\begin{split}
+f'_p\left(x\right) = 
+\begin{cases} 
+  g'_*\left(x\right) & x \in \left[0,p\right] \\
+  g'_*\left(x \mod{p}\right) & x \notin \left[0,p\right]
+\end{cases}
+\end{split}
+\end{equation}
+\section{Second Derivative}
+The second derivative of $g_*\left(x\right)$ is given by:
+\begin{equation}\label{eq:polynomial_6}
+\begin{split}
+g''_*\left(x\right) = 2a^*_2 + 6a^*_3x + 12a^*_4x^2 + 20a^*_5x^3 = c_*^T \cdot \mathrm{x}\left(x\right)
+\end{split}
+\end{equation}
+Where $c_* = \left(2a^*_2,6a^*_3, 12a^*_4,20a^*_5,0,0\right)^T$ and $\mathrm{x}\left(x\right) = \left(1,x,x^2,x^3,x^4,x^5\right)^T$. Therefore, we define $f''_p\left(x\right)$ is given as follows:
+\begin{equation}\label{eq:polynomial_6}
+\begin{split}
+f''_p\left(x\right) = 
+\begin{cases} 
+  g''_*\left(x\right) & x \in \left[0,p\right] \\
+  g''_*\left(x \mod{p}\right) & x \notin \left[0,p\right]
+\end{cases}
+\end{split}
+\end{equation}
 \chapter{Gradient and Hessian Derivations}
 In this appendix, we show detailed derivations for the gradient and Hessian of each individual penalty function, as defined in chapter \ref{chapter:method}.
+\section{Composition}
+Given two smooth functions $f: \mathbb{R} \xrightarrow[]{} \mathbb{R}$ and $h: \mathbb{R}^n \xrightarrow[]{} \mathbb{R}$, we derive the gradient and Hessian of their composition $f \circ h: \mathbb{R}^n \xrightarrow[]{} \mathbb{R}$.
+\subsection{Gradient}
+The differential of  $f\Big(h\left(x\right)\Big)$ is computed as follows:
+\begin{flalign}
+df\Big(h\left(x\right)\Big) &= f'\Big(h\left(x\right)\Big) \cdot dh\left(x\right)
+\\
+& = f'\Big(h\left(x\right)\Big) \cdot \nabla h\left(x\right)^T \cdot dx
+\\
+& = \bigg(f'\Big(h\left(x\right)\Big) \cdot \nabla h\left(x\right)\bigg)^T \cdot dx \label{eq:composition_gradient}
+\end{flalign}
+By \ref{eq:composition_gradient} we get that the gradient $\nabla f\Big(h\left(x\right)\Big)$ is given by:
+\begin{flalign}
+\nabla f\Big(h\left(x\right)\Big) = f'\Big(h\left(x\right)\Big) \cdot \nabla h\left(x\right)
+\end{flalign}
+\subsection{Hessian}
+The differential of  $\nabla f\Big(h\left(x\right)\Big)$ is computed as follows:
+\begin{flalign}
+d \nabla f\Big(h\left(x\right)\Big) &= d\bigg( f'\Big(h\left(x\right)\Big) \cdot \nabla h\left(x\right)\bigg)
+\\
+& = df'\Big(h\left(x\right)\Big) \cdot \nabla h\left(x\right) + f'\Big(h\left(x\right)\Big) \cdot d\nabla h\left(x\right)
+\\
+& = f''\Big(h\left(x\right)\Big) \cdot dh\left(x\right) \cdot \nabla h\left(x\right) + f'\Big(h\left(x\right)\Big) \cdot \nabla^2 h\left(x\right) \cdot dx
+\\
+& = f''\Big(h\left(x\right)\Big) \cdot \underbrace{\nabla h\left(x\right)^T \cdot dx}_{\text{scalar}} \cdot \nabla h\left(x\right) + f'\Big(h\left(x\right)\Big) \cdot \nabla^2 h\left(x\right) \cdot dx
+\\
+& = f''\Big(h\left(x\right)\Big) \cdot \underbrace{\nabla h\left(x\right) \cdot \nabla h\left(x\right)^T}_{\text{matrix}} \cdot dx + f'\Big(h\left(x\right)\Big) \cdot \nabla^2 h\left(x\right) \cdot dx
+\\
+& = \bigg(f''\Big(h\left(x\right)\Big) \cdot \nabla h\left(x\right) \cdot \nabla h\left(x\right)^T + f'\Big(h\left(x\right)\Big) \cdot \nabla^2 h\left(x\right)\bigg) \cdot dx
+\label{eq:composition_hessian}
+\end{flalign}
+By \ref{eq:composition_hessian} we get that the Hessian $\nabla^2 f\Big(h\left(x\right)\Big)$ is given by:
+\begin{flalign}
+\nabla^2 f\Big(h\left(x\right)\Big) = f''\Big(h\left(x\right)\Big) \cdot \nabla h\left(x\right) \cdot \nabla h\left(x\right)^T + f'\Big(h\left(x\right)\Big) \cdot \nabla^2 h\left(x\right)
+\end{flalign}
 \section{Angle Penalty Function}
 The angle penalty functions is given by:
 \begin{equation}\label{eq:angle_penalty}
@@ -57,19 +127,112 @@ Where $\theta\left(e_k\right) = \mathrm{atan2}\Big(\mathrm{y}\left(v_k^2\right) 
 
 \noindent By denoting:
 \begin{equation}\label{eq:angle_penalty}
-x = \Big(\mathrm{y}\left(v_i^2\right), \mathrm{y}\left(v_i^1\right), \mathrm{x}\left(v_i^2\right), \mathrm{x}\left(v_i^1\right), \mathrm{y}\left(v_j^2\right), \mathrm{y}\left(v_j^1\right), \mathrm{x}\left(v_j^2\right), \mathrm{x}\left(v_j^1\right)\Big)^T
+u = \Big(\mathrm{y}\left(v_i^2\right), \mathrm{y}\left(v_i^1\right), \mathrm{x}\left(v_i^2\right), \mathrm{x}\left(v_i^1\right), \mathrm{y}\left(v_j^2\right), \mathrm{y}\left(v_j^1\right), \mathrm{x}\left(v_j^2\right), \mathrm{x}\left(v_j^1\right)\Big)^T
 \end{equation}
-And by replacing the sine expression with a polynomial periodic function $f_p$ with period $p=\frac{\pi}{2}$, as defined in appendix \ref{appendix:a}, we can rewrite $P_{\mathrm{angle}}$ as follows:
+And by replacing the sine expression with a piece-wise polynomial periodic function $f_p$ with period $p=\frac{\pi}{2}$ (as defined in appendix \ref{appendix:a}), we can rewrite $P_{\mathrm{angle}}$ as follows:
 \begin{equation}\label{eq:angle_penalty_rephrased}
 \begin{split}
-P_{\mathrm{angle}}\left(x\right) = f_{\frac{\pi}{2}} \bigg(\alpha\left(x\right) - \beta\left(x\right)\bigg)
+P_{\mathrm{angle}}\left(u\right) = f_{\frac{\pi}{2}} \bigg(h\left(u\right)\bigg)
 \end{split}
 \end{equation}
-Where $\alpha\left(x\right) = \mathrm{atan2}\Big(x_0 - x_1, x_2 -x_3\Big)$ and $\beta\left(x\right) = \mathrm{atan2}\Big(x_4 - x_5, x_6 -x_7\Big)$.
-Its differential is given by:
-\begin{equation}\label{eq:angle_penalty_rephrased_gradient}
+Where $h\left(u\right) = \alpha\left(u\right) - \beta\left(u\right)$, and $\alpha$ and $\beta$ are given by $\alpha\left(u\right) = \mathrm{atan2}\Big(u_0 - u_1, u_2 - u_3\Big)$ and $\beta\left(u\right) = \mathrm{atan2}\Big(u_4 - u_5, u_6 -u_7\Big)$.
+\noindent Since we already know how to calculate the gradient and Hessian for a composition of smooth functions, we only need to find expressions for $\nabla h\left(u\right)$ and $\nabla^2 h\left(u\right)$.
+\subsection{Gradient}
+The differential of $h\left(u\right)$ is given by:
+\begin{flalign}
+dh\left(u\right) &= d\Big(\alpha\left(u\right) - \beta\left(u\right)\Big)
+\\
+&= \nabla\alpha\left(u\right)^T du - \nabla\beta\left(u\right)^T\ du
+\\
+\label{eq:gradient_h_angle}
+&= \bigg(\nabla\alpha\left(u\right) - \nabla\beta\left(u\right)\bigg)^Tdu
+\end{flalign}
+By \ref{eq:gradient_h_angle} we get that the gradient $\nabla h\left(u\right)$ is given by:
+\begin{equation}
 \begin{split}
-dP_{\mathrm{angle}}\left(x\right) = d\Bigg(f_{\frac{\pi}{2}} \bigg( \alpha\left(x\right) - \beta\left(x\right) \bigg)\Bigg)\\
- = f'_{\frac{\pi}{2}} \bigg(\mathrm{atan2}\Big(x_0 - x_1, x_2 -x_3\Big) - \mathrm{atan2}\Big(x_4 - x_5, x_6 -x_7\Big)\bigg)
+\nabla h\left(u\right) = \nabla\alpha\left(u\right) - \nabla\beta\left(u\right)
 \end{split}
 \end{equation}
+The differential of $\alpha\left(x\right)$ is given by:
+\begin{flalign*}
+d\alpha\left(u\right) &= d\bigg(\mathrm{atan2}\Big(u_0 - u_1, u_2 - u_3\Big)\bigg) \\
+&= \frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\big(u_0 - u_1\big) + \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\big(u_2 - u_3\big) \\
+&= \frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big)^Tdu + \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big)^Tdu \\
+&= \Bigg(\frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big)^T + \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big)^T\Bigg)du \\
+&= \Bigg(\frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big) + \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big)\Bigg)^Tdu \\
+\end{flalign*}
+Therefore, we get that the gradient $\nabla \alpha\left(u\right)$ is given by:
+\begin{equation}
+\begin{split}
+\nabla \alpha\left(u\right) = \frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big) + \\ \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big)
+\end{split}
+\end{equation}
+Where $\nabla u_0 - \nabla u_1 = \left(1,-1,0,0,0,0,0,0\right)^T$ and $\nabla u_2 - \nabla u_3 = \left(0,0,1,-1,0,0,0,0\right)^T$, $\nabla \mathrm{atan2}\left(y,x\right) = \left(\frac{-y}{x^2+y^2}, \frac{x}{x^2 + y^2}\right)^T$ and thus $\frac{d\mathrm{atan2}}{dy}\left(y,x\right) = \frac{-y}{x^2+y^2}$ and $\frac{d\mathrm{atan2}}{dx}\left(y,x\right) = \frac{x}{x^2+y^2}$.
+The gradient $\nabla\beta\left(x\right)$ is derived in a similar way.
+\subsection{Hessian}
+The differential of $\nabla \h\left(u\right)$ is derived as follows:
+\begin{flalign}
+d \nabla h \left(u\right) &= d\Big(\nabla\alpha\left(u\right) - \nabla\beta\left(u\right)\Big)
+\\
+& = \nabla^2\alpha\left(u\right) du - \nabla^2\beta\left(u\right) du
+\\
+\label{eq:hessian_h_angle}
+& = \Big(\nabla^2\alpha\left(u\right) - \nabla^2\beta\left(u\right)\Big) du
+\end{flalign}
+By \ref{eq:hessian_h_angle} we get that the gradient $\nabla^2 h\left(u\right)$ is given by:
+\begin{equation}
+\begin{split}
+\nabla^2 h\left(u\right) = \nabla^2\alpha\left(u\right) - \nabla^2\beta\left(u\right)
+\end{split}
+\end{equation}
+The differential of $\nabla \alpha\left(u\right)$ is derived as follows:
+\begin{flalign}
+d \nabla \alpha\left(u\right) &= d \Big( \frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big) + \\
+\notag
+& \quad \quad \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big) \Big)
+\\
+&= d \frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big) + \\
+\notag
+& \quad \quad d \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big)
+\\
+&= \bigg(\frac{d^2\mathrm{atan2}}{dy^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\left(u_0 - u_1\right) + \\
+\notag
+&\quad \quad \frac{d^2\mathrm{atan2}}{dxdy}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\left(u_2 - u_3\right)\bigg) \big(\nabla u_0 - \nabla u_1\big) + \\
+\notag
+&\quad \bigg(\frac{d^2\mathrm{atan2}}{dx^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\left(u_0 - u_1\right) + \\
+\notag
+&\quad \quad \frac{d^2\mathrm{atan2}}{dydx}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\left(u_2 - u_3\right)\bigg) \big(\nabla u_2 - \nabla u_3\big)
+\\
+&= \bigg(\frac{d^2\mathrm{atan2}}{dy^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \left(\nabla u_0 - \nabla u_1\right)^T du + \\
+\notag
+&\quad \quad \frac{d^2\mathrm{atan2}}{dxdy}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \left(\nabla u_2 - \nabla u_3\right)^T du \bigg) \big(\nabla u_0 - \nabla u_1\big) + \\
+\notag
+&\quad \bigg(\frac{d^2\mathrm{atan2}}{dx^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \left(\nabla u_0 - \nabla u_1\right)^T du + \\
+\notag
+&\quad \quad \frac{d^2\mathrm{atan2}}{dydx}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \left(\nabla u_2 - \nabla u_3\right)^T du \bigg) \big(\nabla u_2 - \nabla u_3\big)
+\\
+\label{eq:hessian_alpha_angle}
+&= \bigg(\frac{d^2\mathrm{atan2}}{dy^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_0 - \nabla u_1\big) \left(\nabla u_0 - \nabla u_1\right)^T + \\
+\notag
+&\quad \quad \frac{d^2\mathrm{atan2}}{dxdy}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_0 - \nabla u_1\big) \left(\nabla u_2 - \nabla u_3\right)^T + \\
+\notag
+&\quad \quad \frac{d^2\mathrm{atan2}}{dx^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_2 - \nabla u_3\big) \left(\nabla u_0 - \nabla u_1\right)^T + \\
+\notag
+&\quad \quad \frac{d^2\mathrm{atan2}}{dydx}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_2 - \nabla u_3\big) \left(\nabla u_2 - \nabla u_3\right)^T \bigg) du
+\end{flalign}
+By \ref{eq:hessian_alpha_angle} we get that the Hessian $\nabla^2 \alpha\left(u\right)$ is given by:
+\begin{equation}
+\begin{split}
+\nabla^2 \alpha\left(u\right) &= 
+\frac{d^2\mathrm{atan2}}{dy^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_0 - \nabla u_1\big) \left(\nabla u_0 - \nabla u_1\right)^T + \\
+\notag
+&\quad \quad \frac{d^2\mathrm{atan2}}{dxdy}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_0 - \nabla u_1\big) \left(\nabla u_2 - \nabla u_3\right)^T + \\
+\notag
+&\quad \quad \frac{d^2\mathrm{atan2}}{dx^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_2 - \nabla u_3\big) \left(\nabla u_0 - \nabla u_1\right)^T + \\
+\notag
+&\quad \quad \frac{d^2\mathrm{atan2}}{dydx}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_2 - \nabla u_3\big) \left(\nabla u_2 - \nabla u_3\right)^T
+\end{split}
+\end{equation}
+Where $\nabla u_0 - \nabla u_1 = \left(1,-1,0,0,0,0,0,0\right)^T$ and $\nabla u_2 - \nabla u_3 = \left(0,0,1,-1,0,0,0,0\right)^T$, $\nabla \mathrm{atan2}\left(y,x\right) = \left(\frac{-y}{x^2+y^2}, \frac{x}{x^2 + y^2}\right)^T$. The second partial derivatives of $\mathrm{atan2}$ can be easily derived by hand.
+The Hessian $\nabla\beta\left(x\right)$ is derived in a similar way.
+\section{Length Penalty Function}
