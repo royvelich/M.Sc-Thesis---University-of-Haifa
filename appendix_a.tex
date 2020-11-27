@@ -1,6 +1,7 @@
 \chapter{Polynomial Approximation}
 \label{appendix:a}
 \section{Piece-wise Polynomial Periodic Function}
+\label{section:piecewise_periodic_polynomial}
 To make each Newton's method iteration more computationally efficient, and to simplify the gradient and Hessian derivations and the technical implementation details in general, we design a smooth periodic function $f_p: \mathbb{R} \xrightarrow[]{} \mathbb{R}$ with period $p$, that satisfies the following requirements for any $x \in \mathbb{R}$ and $k \in \mathbb{Z}$:
 \begin{equation}\label{eq:periodic_req}
 \begin{split}
@@ -219,50 +220,49 @@ By \ref{eq:composition_hessian} we get that the Hessian $\nabla^2 f\Big(h\left(x
 \begin{flalign}
 \nabla^2 f\Big(h\left(x\right)\Big) = f''\Big(h\left(x\right)\Big) \cdot \nabla h\left(x\right) \cdot \nabla h\left(x\right)^T + f'\Big(h\left(x\right)\Big) \cdot \nabla^2 h\left(x\right)
 \end{flalign}
-
-
-
-
-
-
-
-
 \section{Squared Norm}
-In this section, we derive the gradient and Hessian of the squared Euclidean norm $\norm{\cdot}_2^2: \mathbb{R}^n \xrightarrow[]{} \mathbb{R}$.
+\label{section:squared_norm}
+In this section, we derive the gradient and Hessian of the squared Euclidean norm $g\left(x\right) = \norm{x}_2^2$, where $x \in \mathbb{R}^n$.
 \subsection{Gradient}
-The differential of $\norm{\cdot}_2^2$ is computed as follows:
+The differential of $g\left(x\right)$ is computed as follows:
 \begin{flalign}
-d\norm{x}_2^2 &= d\left(x^Tx\right) \\
+dg\left(x\right) &= d\left(\norm{x}_2^2\right) \\
+&= d\left(x^Tx\right) \\
 &= \left(dx\right)^Tx + x^Tdx \\
 &= x^Tdx + x^Tdx \\
 &= 2x^Tdx \\
-\label{eq:squared_norm_gradient}
 &= \left(2x\right)^Tdx
+\label{eq:squared_norm_gradient}
 \end{flalign}
-By \ref{eq:squared_norm_gradient} we get that the gradient $\nabla \norm{x}_2^2$ is given by:
+By \ref{eq:squared_norm_gradient} we get that the gradient $\nabla g\left(x\right)$ is given by:
 \begin{flalign}
-\nabla \norm{x}_2^2 = 2x
+\nabla \left(x\right) = 2x
 \end{flalign}
 \subsection{Hessian}
-The differential of $\nabla \norm{\cdot}_2^2$ is computed as follows:
+The differential of $\nabla g \left(x\right)$ is computed as follows:
 \begin{flalign}
-d\norm{x}_2^2 &= d\left(x^Tx\right) \\
-&= \left(dx\right)^Tx + x^Tdx \\
-&= x^Tdx + x^Tdx \\
-&= 2x^Tdx \\
-\label{eq:squared_norm_gradient}
-&= \left(2x\right)^Tdx
+d \nabla g \left(x\right) &= d\left(2x\right) \\
+&= 2dx \\
+&= 2Idx
+\label{eq:squared_norm_hessian}
 \end{flalign}
-By \ref{eq:squared_norm_gradient} we get that the gradient $\nabla \norm{x}_2^2$ is given by:
+By \ref{eq:squared_norm_hessian} we get that the gradient $\nabla^2 g\left(x\right)$ is given by:
 \begin{flalign}
-\nabla \norm{x}_2^2 = 2x
+\nabla^2 g \left(x\right) = 2I
 \end{flalign}
-
-
-
-
+\section{\mathrb{atan2}}
+\label{section:atan2}
+In this section, we derive the gradient and Hessian of $\mathrm{atan2}\left(y,x\right)$, for $x,y \in \mathbb{R}$.
+\subsection{Gradient}
+It is \href{https://en.wikipedia.org/wiki/Atan2}{widely known} that the gradient $\nabla \mathrm{atan2}\left(y,x\right)$ is given by:
+\begin{flalign}
+\nabla \mathrm{atan2}\left(y,x\right) = \Big(-\frac{y}{x^2 + y^2}, \frac{x}{x^2 + y^2}\Big)
+\end{flalign}
+\subsection{Hessian}
+Deriving the $2 \times 2$ Hessian matrix $\nabla^2 \mathrm{atan2}\left(y,x\right)$ is rather trivial, and is left as an exercise for the reader. 
 \section{Angle Penalty Function}
-The angle penalty functions is given by:
+\label{section:angle_penalty_function}
+In paragraph \ref{paragraph:angle_penalty_function_method}, the angle penalty function was defined as follows:
 \begin{equation}\label{eq:angle_penalty}
 \begin{split}
 P_{\mathrm{angle}}\left(e_i,e_j\right) = \mathrm{sin} \bigg( 4\Big(\theta\left(e_i\right) - \theta\left(e_j\right)\Big) - \frac{\pi}{2}\bigg) + 1
@@ -280,120 +280,89 @@ And by replacing the sine expression with a piece-wise polynomial periodic funct
 P_{\mathrm{angle}}\left(u\right) = f_{\frac{\pi}{2}} \bigg(h\left(u\right)\bigg)
 \end{split}
 \end{equation}
-Where $h\left(u\right) = \alpha\left(u\right) - \beta\left(u\right)$, and $\alpha$ and $\beta$ are given by $\alpha\left(u\right) = \mathrm{atan2}\Big(u_0 - u_1, u_2 - u_3\Big)$ and $\beta\left(u\right) = \mathrm{atan2}\Big(u_4 - u_5, u_6 -u_7\Big)$.
-\noindent Since we already know how to calculate the gradient and Hessian for a composition of smooth functions, we only need to find expressions for $\nabla h\left(u\right)$ and $\nabla^2 h\left(u\right)$.
-\subsection{Gradient}
-The differential of $h\left(u\right)$ is given by:
+Where $h\left(u\right) = \mathrm{atan2}\Big(\delta_{0,1}\left(u\right), \delta_{2,3}\left(u\right)\Big) - \mathrm{atan2}\Big(\delta_{4,5}\left(u\right), \delta_{6,7}\left(u\right)\Big)$, and $\delta_{i,j}\left(u\right) = u_i - u_j$.
+
+\noindent Since we already know how to calculate the first and second derivatives of $f_{\frac{\pi}{2}}$ (section \ref{section:piecewise_periodic_polynomial}), the gradient and Hessian of $\mathrm{atan2}$ (section \ref{section:atan2}), and we also know to calculate the gradient and Hessian of general composition of functions (section \ref{section:composition_general_case}), we only need to explicitly calculate $\nabla \delta_{i,j}\left(u\right)$ and $\nabla^2 \delta_{i,j}\left(u\right)$ in order to be able to calculate $\nabla P_{\mathrm{angle}}\left(u\right)$ and $\nabla^2 P_{\mathrm{angle}}\left(u\right)$.
+\subsection{Deriving $\nabla \delta_{i,j}\left(u\right)$}
+The differential of $\nabla \delta_{i,j}\left(u\right)$ is given by:
 \begin{flalign}
-dh\left(u\right) &= d\Big(\alpha\left(u\right) - \beta\left(u\right)\Big)
+d\nabla \delta_{i,j}\left(u\right) &= d\left(u_i - u_j\right) \\
+&= \nabla u_i dx - \nabla u_j dx
 \\
-&= \nabla\alpha\left(u\right)^T du - \nabla\beta\left(u\right)^T\ du
-\\
-\label{eq:gradient_h_angle}
-&= \bigg(\nabla\alpha\left(u\right) - \nabla\beta\left(u\right)\bigg)^Tdu
+\label{delta_gradient}
+&= \left(\nabla u_i - \nabla u_j\right) dx
 \end{flalign}
-By \ref{eq:gradient_h_angle} we get that the gradient $\nabla h\left(u\right)$ is given by:
-\begin{equation}
-\begin{split}
-\nabla h\left(u\right) = \nabla\alpha\left(u\right) - \nabla\beta\left(u\right)
-\end{split}
-\end{equation}
-The differential of $\alpha\left(x\right)$ is given by:
-\begin{flalign*}
-d\alpha\left(u\right) &= d\bigg(\mathrm{atan2}\Big(u_0 - u_1, u_2 - u_3\Big)\bigg) \\
-&= \frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\big(u_0 - u_1\big) + \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\big(u_2 - u_3\big) \\
-&= \frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big)^Tdu + \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big)^Tdu \\
-&= \Bigg(\frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big)^T + \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big)^T\Bigg)du \\
-&= \Bigg(\frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big) + \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big)\Bigg)^Tdu \\
-\end{flalign*}
-Therefore, we get that the gradient $\nabla \alpha\left(u\right)$ is given by:
-\begin{equation}
-\begin{split}
-\nabla \alpha\left(u\right) = \frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big) + \\ \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big)
-\end{split}
-\end{equation}
-Where $\nabla u_0 - \nabla u_1 = \left(1,-1,0,0,0,0,0,0\right)^T$ and $\nabla u_2 - \nabla u_3 = \left(0,0,1,-1,0,0,0,0\right)^T$, $\nabla \mathrm{atan2}\left(y,x\right) = \left(\frac{-y}{x^2+y^2}, \frac{x}{x^2 + y^2}\right)^T$ and thus $\frac{d\mathrm{atan2}}{dy}\left(y,x\right) = \frac{-y}{x^2+y^2}$ and $\frac{d\mathrm{atan2}}{dx}\left(y,x\right) = \frac{x}{x^2+y^2}$.
-The gradient $\nabla\beta\left(x\right)$ is derived in a similar way.
-\subsection{Hessian}
-The differential of $\nabla \h\left(u\right)$ is derived as follows:
+Where $\nabla u_i$ and $\nabla u_j$ are one-hot vectors with 1 at index $i$ and $j$, respectively. By \ref{delta_gradient}, the gradient $\nabla \delta_{i,j}\left(u\right)$ is given by:
 \begin{flalign}
-d \nabla h \left(u\right) &= d\Big(\nabla\alpha\left(u\right) - \nabla\beta\left(u\right)\Big)
-\\
-& = \nabla^2\alpha\left(u\right) du - \nabla^2\beta\left(u\right) du
-\\
-\label{eq:hessian_h_angle}
-& = \Big(\nabla^2\alpha\left(u\right) - \nabla^2\beta\left(u\right)\Big) du
+\nabla \delta_{i,j}\left(u\right) = \nabla u_i - \nabla u_j
 \end{flalign}
-By \ref{eq:hessian_h_angle} we get that the gradient $\nabla^2 h\left(u\right)$ is given by:
-\begin{equation}
-\begin{split}
-\nabla^2 h\left(u\right) = \nabla^2\alpha\left(u\right) - \nabla^2\beta\left(u\right)
-\end{split}
-\end{equation}
-The differential of $\nabla \alpha\left(u\right)$ is derived as follows:
-\begin{flalign}
-d \nabla \alpha\left(u\right) &= d \Big( \frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big) + \\
-\notag
-& \quad \quad \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big) \Big)
-\\
-&= d \frac{d\mathrm{atan2}}{dy}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_0 - \nabla u_1\big) + \\
-\notag
-& \quad \quad d \frac{d\mathrm{atan2}}{dx}\Big(u_0 - u_1, u_2 - u_3\Big) \big(\nabla u_2 - \nabla u_3\big)
-\\
-&= \bigg(\frac{d^2\mathrm{atan2}}{dy^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\left(u_0 - u_1\right) + \\
-\notag
-&\quad \quad \frac{d^2\mathrm{atan2}}{dxdy}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\left(u_2 - u_3\right)\bigg) \big(\nabla u_0 - \nabla u_1\big) + \\
-\notag
-&\quad \bigg(\frac{d^2\mathrm{atan2}}{dx^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\left(u_0 - u_1\right) + \\
-\notag
-&\quad \quad \frac{d^2\mathrm{atan2}}{dydx}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot d\left(u_2 - u_3\right)\bigg) \big(\nabla u_2 - \nabla u_3\big)
-\\
-&= \bigg(\frac{d^2\mathrm{atan2}}{dy^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \left(\nabla u_0 - \nabla u_1\right)^T du + \\
-\notag
-&\quad \quad \frac{d^2\mathrm{atan2}}{dxdy}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \left(\nabla u_2 - \nabla u_3\right)^T du \bigg) \big(\nabla u_0 - \nabla u_1\big) + \\
-\notag
-&\quad \bigg(\frac{d^2\mathrm{atan2}}{dx^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \left(\nabla u_0 - \nabla u_1\right)^T du + \\
-\notag
-&\quad \quad \frac{d^2\mathrm{atan2}}{dydx}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \left(\nabla u_2 - \nabla u_3\right)^T du \bigg) \big(\nabla u_2 - \nabla u_3\big)
-\\
-\label{eq:hessian_alpha_angle}
-&= \bigg(\frac{d^2\mathrm{atan2}}{dy^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_0 - \nabla u_1\big) \left(\nabla u_0 - \nabla u_1\right)^T + \\
-\notag
-&\quad \quad \frac{d^2\mathrm{atan2}}{dxdy}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_0 - \nabla u_1\big) \left(\nabla u_2 - \nabla u_3\right)^T + \\
-\notag
-&\quad \quad \frac{d^2\mathrm{atan2}}{dx^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_2 - \nabla u_3\big) \left(\nabla u_0 - \nabla u_1\right)^T + \\
-\notag
-&\quad \quad \frac{d^2\mathrm{atan2}}{dydx}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_2 - \nabla u_3\big) \left(\nabla u_2 - \nabla u_3\right)^T \bigg) du
-\end{flalign}
-By \ref{eq:hessian_alpha_angle} we get that the Hessian $\nabla^2 \alpha\left(u\right)$ is given by:
-\begin{equation}
-\begin{split}
-\nabla^2 \alpha\left(u\right) &= 
-\frac{d^2\mathrm{atan2}}{dy^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_0 - \nabla u_1\big) \left(\nabla u_0 - \nabla u_1\right)^T + \\
-\notag
-&\quad \quad \frac{d^2\mathrm{atan2}}{dxdy}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_0 - \nabla u_1\big) \left(\nabla u_2 - \nabla u_3\right)^T + \\
-\notag
-&\quad \quad \frac{d^2\mathrm{atan2}}{dx^2}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_2 - \nabla u_3\big) \left(\nabla u_0 - \nabla u_1\right)^T + \\
-\notag
-&\quad \quad \frac{d^2\mathrm{atan2}}{dydx}\Big(u_0 - u_1, u_2 - u_3\Big) \cdot \big(\nabla u_2 - \nabla u_3\big) \left(\nabla u_2 - \nabla u_3\right)^T
-\end{split}
-\end{equation}
-Where $\nabla u_0 - \nabla u_1 = \left(1,-1,0,0,0,0,0,0\right)^T$ and $\nabla u_2 - \nabla u_3 = \left(0,0,1,-1,0,0,0,0\right)^T$, $\nabla \mathrm{atan2}\left(y,x\right) = \left(\frac{-y}{x^2+y^2}, \frac{x}{x^2 + y^2}\right)^T$. The second partial derivatives of $\mathrm{atan2}$ can be easily derived by hand.
-The Hessian $\nabla\beta\left(x\right)$ is derived in a similar way.
+\subsection{Deriving $\nabla^2 \delta_{i,j}\left(u\right)$}
+Since $\nabla \delta_{i,j}\left(u\right)$ is constant, we get that $\nabla^2 \delta_{i,j}\left(u\right) = 0$.
 \section{Length Penalty Function}
-We define the length penalty function $P_{length}$ as follows:
+In paragraph \ref{paragraph:length_penalty_function_method}, we defined the length penalty function $P_{length}$ as follows:
 \begin{equation}\label{length_penalty}
 \begin{split}
 P_{\mathrm{length}}\left(e_i,e_j\right) = \left(\norm{e_i}_2^2 - \norm{e_j}_2^2\right)^2
 \end{split}
 \end{equation}
-The length penalty measures the Euclidean length discrepancy between the two half-edges $e_i$ and $e_j$, where for $k \in \left\{i,j\right\}$, we have $e_k = \left(v^1_k, v^2_k\right)$ and therefore:
+The length penalty measures the Euclidean length discrepancy between the two half-edges $e_i$ and $e_j$, where for $k \in \left\{i,j\right\}$, we have $e_k = \left(v^1_k, v^2_k\right)$. We can write $\norm{e_k}_2^2$ explicitly as follows:
 \begin{flalign}
 \norm{e_k}_2^2 &= \left(v^2_k - v^1_k\right)^T\left(v^2_k - v^1_k\right) \\
 &= \Big(\mathrm{x}\left(v_k^2\right) - \mathrm{x}\left(v_k^1\right), \mathrm{y}\left(v_k^2\right) - \mathrm{y}\left(v_k^1\right) \Big)^T \Big(\mathrm{x}\left(v_k^2\right) - \mathrm{x}\left(v_k^1\right), \mathrm{y}\left(v_k^2\right) - \mathrm{y}\left(v_k^1\right) \Big)
 \end{flalign}
 \noindent By denoting:
+\begin{equation}
+u = \Big(\mathrm{y}\left(v_i^2\right), \mathrm{y}\left(v_i^1\right), \mathrm{x}\left(v_i^2\right), \mathrm{x}\left(v_i^1\right), \mathrm{y}\left(v_j^2\right), \mathrm{y}\left(v_j^1\right), \mathrm{x}\left(v_j^2\right), \mathrm{x}\left(v_j^1\right)\Big)^T
+\end{equation}
+we can write $\norm{e_i}_2^2$ and $\norm{e_j}_2^2$ as follows:
+\begin{flalign}
+\norm{e_i}_2^2 &= \Big(\delta_{2,3}\left(u\right), \delta_{0,1}\left(u\right)\Big)^T \Big(\delta_{2,3}\left(u\right), \delta_{0,1}\left(u\right)\Big)
+\end{flalign}
+\begin{flalign}
+\norm{e_j}_2^2 &= \Big(\delta_{6,7}\left(u\right), \delta_{4,5}\left(u\right)\Big)^T \Big(\delta_{6,7}\left(u\right), \delta_{4,5}\left(u\right)\Big)
+\end{flalign}
+Where $\delta_{i,j}\left(u\right)$ is defined in section \ref{section:angle_penalty_function}.
+
+\noindent Since we obviously know how to calculate the first and second derivatives of the square function of a real number, the gradient and Hessian of the squared norm (section \ref{section:squared_norm}), the gradient and Hessian of $\delta_{i,j}\left(u\right)$ (section \ref{section:angle_penalty_function}), and we also know to calculate the gradient and Hessian of general composition of functions (section \ref{section:composition_general_case}), we immediately know how to calculate $\nabla P_{\mathrm{length}}\left(u\right)$ and $\nabla^2 P_{\mathrm{length}}\left(u\right)$.
+\section{Translation Penalty Function}
+\label{section:translation_penalty_function}
+In paragraph \ref{paragraph:translation_penalty_function_method}, we defined the translation penalty function $P_{\mathrm{translation}}$ as follows:
+\begin{equation}\label{eq:translation_penalty}
+\begin{split}
+P_{\mathrm{translation}}\left(e_i,e_j\right) = \mathrm{sin} \Big( 2\pi\cdot\Delta_x\big(e_i,e_j\big) - \frac{\pi}{2}\Big) + \mathrm{sin} \Big( 2\pi\cdot\Delta_y\big(e_i,e_j\big) - \frac{\pi}{2}\Big) + 2
+\end{split}
+\end{equation}
+Where $\Delta_x\big(e_i,e_j\big) = \mathrm{x}\left(v_i^1\right) - \mathrm{x}\left(v_j^1\right)$ and $\Delta_y\big(e_i,e_j\big) = \mathrm{y}\left(v_i^1\right) - \mathrm{y}\left(v_j^1\right)$ represent the Manhattan distance between the two twin-vertices $v^i_1$ and $v^j_1$, which is also, implicitly, the Manhattan distance between the two half-edges.
+
+\noindent By denoting:
 \begin{equation}\label{eq:angle_penalty}
 u = \Big(\mathrm{y}\left(v_i^2\right), \mathrm{y}\left(v_i^1\right), \mathrm{x}\left(v_i^2\right), \mathrm{x}\left(v_i^1\right), \mathrm{y}\left(v_j^2\right), \mathrm{y}\left(v_j^1\right), \mathrm{x}\left(v_j^2\right), \mathrm{x}\left(v_j^1\right)\Big)^T
 \end{equation}
-And by replacing the sine expression with a piece-wise polynomial periodic function $f_p$ with period $p=\frac{\pi}{2}$ (as defined in appendix \ref{appendix:a}), we can rewrite $P_{\mathrm{angle}}$ as follows:
+And by replacing the sine expression with a piece-wise polynomial periodic function $f_p$ with period $p=1$ (as defined in appendix \ref{appendix:a}), we can rewrite $P_{\mathrm{translation}}$ as follows:
+\begin{flalign}
+P_{\mathrm{translation}}\left(u\right) = f_1\Big(\delta_{3,7}\left(u\right)\Big) + f_1\Big(\delta_{1,4}\left(u\right)\Big)
+\end{flalign}
+Where $\delta_{i,j}\left(u\right)$ is defined in section \ref{section:angle_penalty_function}.
+
+\noindent Since we already know how to calculate the first and second derivatives of $f_1$ (section \ref{section:piecewise_periodic_polynomial}),  the gradient and Hessian of $\delta_{i,j}\left(u\right)$ (section \ref{section:angle_penalty_function}), and we also know to calculate the gradient and Hessian of general composition of functions (section \ref{section:composition_general_case}), we immediately know how to calculate $\nabla P_{\mathrm{translation}}\left(u\right)$ and $\nabla^2 P_{\mathrm{translation}}\left(u\right)$.
+\section{Singular Points Penalty Function}
+\label{section:singular_points_penalty_function_appendix}
+In section \ref{section:singular_points_penlaty_function_method}, we defined the singular points penalty function $P_{\mathrm{singular}}\left(S\right)$ as follows:
+\begin{equation}\label{eq:singular_points_penalty}
+\begin{split}
+P_{\mathrm{singular}}\left(S\right) = \sum_{v \in S} \bigg( \mathrm{sin} \Big( 2\pi\cdot\mathrm{x}\big(v\big) - \frac{\pi}{2}\Big) + \mathrm{sin} \Big( 2\pi\cdot\mathrm{y}\big(v\big) - \frac{\pi}{2}\Big) + 2 \bigg)
+\end{split}
+\end{equation}
+Where $\mathrm{x}\big(u\big)$ and $\mathrm{y}\big(u\big)$ represent the domain coordinates of a twin-vertex in $S$.
+
+\noindent By denoting:
+\begin{equation}\label{eq:angle_penalty}
+u = \Big(\mathrm{x}\left(v_0\right), \mathrm{y}\left(v_0\right), \mathrm{x}\left(v_1\right), \mathrm{y}\left(v_1\right), \hdots , \mathrm{x}\left(v_{\abs{S}-1}\right), \mathrm{y}\left(v_{\abs{S}-1}\right)\Big)^T
+\end{equation}
+And by replacing the sine expression with a piece-wise polynomial periodic function $f_p$ with period $p=1$ (as defined in appendix \ref{appendix:a}), we can rewrite $P_{\mathrm{singular}}$ as follows:
+\begin{flalign}
+P_{\mathrm{singular}}\left(u\right) = \sum_{i = 0}^{\abs{S} - 1} f_1\Big(\sigma_i\left(u\right)\Big)
+\end{flalign}
+Where $\sigma_i\left(u\right) = u_i$. Obviously, $\nabla \sigma_i\left(u\right)$ is the one-hot vector with 1 at index $i$, and $\nabla^2 \sigma_i\left(u\right) = 0$.
+
+\noindent Since we already know how to calculate the first and second derivatives of $f_1$ (section \ref{section:piecewise_periodic_polynomial}),  the gradient and Hessian of $\sigma{i}\left(u\right)$, and we also know to calculate the gradient and Hessian of general composition of functions (section \ref{section:composition_general_case}), we immediately know how to calculate $\nabla P_{\mathrm{singular}}\left(u\right)$ and $\nabla^2 P_{\mathrm{singular}}\left(u\right)$.
