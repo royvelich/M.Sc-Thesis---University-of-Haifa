@@ -81,8 +81,111 @@ f''_p\left(x\right) =
 \end{equation}
 \chapter{Gradient and Hessian Derivations}
 In this appendix, we show detailed derivations for the gradient and Hessian of each individual penalty function, as defined in chapter \ref{chapter:method}.
-\section{Composition}
-Given two smooth functions $f: \mathbb{R} \xrightarrow[]{} \mathbb{R}$ and $h: \mathbb{R}^n \xrightarrow[]{} \mathbb{R}$, we derive the gradient and Hessian of their composition $f \circ h: \mathbb{R}^n \xrightarrow[]{} \mathbb{R}$.
+\section{Composition - General Case}
+\label{section:composition_general_case}
+Given two smooth functions $f: \mathbb{R}^m \xrightarrow[]{} \mathbb{R}$ and $h: \mathbb{R}^n \xrightarrow[]{} \mathbb{R}^m$, we derive the gradient and Hessian of their composition $g\left(x\right) = f \circ h \left(x\right)$.
+\subsection{Gradient}
+The differential of  $g\left(x\right)$ is computed as follows:
+\begin{flalign}
+dg\left(x\right) &= d\bigg(f\Big(h\left(x\right)\Big)\bigg) \\ &= \nabla f\Big(h\left(x\right)\Big)^T \cdot dh\left(x\right)
+\\
+& = \nabla f \Big(h\left(x\right)\Big)^T \cdot J_h\left(x\right) \cdot dx
+\\
+& = \bigg(J_h\left(x\right)^T \cdot \nabla f\Big(h\left(x\right)\Big)\bigg)^T \cdot dx \label{eq:generalized_composition_gradient}
+\end{flalign}
+By \ref{eq:generalized_composition_gradient} we get that the gradient $\nabla g\left(x\right)$ is given by:
+\begin{flalign}
+\nabla g\left(x\right) = J_h\left(x\right)^T \cdot \nabla f\Big(h\left(x\right)\Big)
+\end{flalign}
+Where $J_h\left(x\right)$ is the Jacobian matrix of $h$ at $x$.
+\subsection{Hessian}
+The differential of $\nabla g\left(x\right)$ is computed as follows:
+\begin{flalign}
+d \nabla g \left(x\right) &= d\bigg( J_h\left(x\right)^T \cdot \nabla f\Big(h\left(x\right)\Big) \bigg)
+\\
+&= d J_h\left(x\right)^T \cdot \nabla f\Big(h\left(x\right)\Big) + J_h\left(x\right)^T \cdot d \nabla f\Big(h\left(x\right)\Big)
+\\
+&= \Big(d J_h\left(x\right)\Big)^T \cdot \nabla f\Big(h\left(x\right)\Big) + J_h\left(x\right)^T \cdot d \nabla f\Big(h\left(x\right)\Big)
+\\
+&= \Big(T_h\left(x\right)dx\Big)^T \cdot \nabla f\Big(h\left(x\right)\Big) + J_h\left(x\right)^T \cdot \nabla^2 f\Big(h\left(x\right)\Big) \cdot dh\left(x\right)
+\\
+&= dx^T \cdot T_h\left(x\right)^T \cdot \nabla f\Big(h\left(x\right)\Big) + J_h\left(x\right)^T \cdot \nabla^2 f\Big(h\left(x\right)\Big) \cdot J_h\left(x\right) \cdot dx
+\\
+&= \bigg(T_h\left(x\right)^T \cdot \nabla f\Big(h\left(x\right)\Big)\bigg)^T \cdot dx + J_h\left(x\right)^T \cdot \nabla^2 f\Big(h\left(x\right)\Big) \cdot J_h\left(x\right) \cdot dx
+\\
+&= \underbrace{\nabla f\Big(h\left(x\right)\Big)^T \cdot T_h\left(x\right)}_{\text{$n \times n$ matrix}} \cdot dx + \underbrace{J_h\left(x\right)^T \cdot \nabla^2 f\Big(h\left(x\right)\Big) \cdot J_h\left(x\right)}_{\text{$n \times n$ matrix}} \cdot dx
+\\
+&= \bigg( \nabla f\Big(h\left(x\right)\Big)^T \cdot T_h\left(x\right) + J_h\left(x\right)^T \cdot \nabla^2 f\Big(h\left(x\right)\Big) \cdot J_h\left(x\right) \bigg) \cdot dx
+\label{eq:generalized_composition_hessian}
+\end{flalign}
+By \ref{eq:generalized_composition_hessian} we get that the Hessian $\nabla^2 g\left(x\right)$ is given by:
+\begin{flalign}
+\nabla^2 g \left(x\right) = \nabla f\Big(h\left(x\right)\Big)^T \cdot T_h\left(x\right) + J_h\left(x\right)^T \cdot \nabla^2 f\Big(h\left(x\right)\Big) \cdot J_h\left(x\right)
+\end{flalign}
+Where $T_h\left(x\right)$ is a tensor of $n$ matrices, each of size $m \times n$.
+\subsection{Derivation of $T_h\left(x\right)$}
+Let the components of $h\left(x\right)$ be defined as follows:
+\begin{flalign}
+    h\left(x\right) &= \begin{bmatrix}
+           h_1\left(x\right) \\
+           \vdots \\
+           h_m\left(x\right)
+         \end{bmatrix}
+\end{flalign}
+Such that $h_i\left(x\right): \mathbb{R}^n \xrightarrow[]{} \mathbb{R}$ for $i \in \left\{1,2,\hdots,m\right\}$. Using that explicit definition of $h\left(x\right)$, we get that the Jacobian $J_h\left(x\right)$ is given by:
+\begin{flalign}
+    J_h\left(x\right) &= \begin{bmatrix}
+           \nabla h_1\left(x\right)^T \\
+           \vdots \\
+           \nabla h_m\left(x\right)^T
+         \end{bmatrix}
+\end{flalign}
+The differential of $J_h\left(x\right)$ is given as follows:
+\begin{flalign}
+    dJ_h\left(x\right) &= \begin{bmatrix}
+           d\nabla h_1\left(x\right)^T \\
+           \vdots \\
+           d\nabla h_m\left(x\right)^T
+         \end{bmatrix}
+\\
+    &= \begin{bmatrix}
+               \Big(d\nabla h_1\left(x\right)\Big)^T \\
+               \vdots \\
+               \Big(d\nabla h_m\left(x\right)\Big)^T
+             \end{bmatrix}
+\\
+    &= \begin{bmatrix}
+               \Big(\nabla^2 h_1\left(x\right) \cdot dx\Big)^T \\
+               \vdots \\
+               \Big(\nabla^2 h_m\left(x\right) \cdot dx\Big)^T
+             \end{bmatrix}
+\end{flalign}
+Let $\mathrm{row}_i\Big(\nabla^2 h_j\left(x\right)\Big)$ be a function that returns the $i$th row of a given matrix. Let $M_i\left(x\right)$ be a matrix of size $m \times n$ defined as follows:
+\begin{flalign}
+    M_i\left(x\right) &=
+    \begin{bmatrix}
+       \mathrm{row}_i\Big(\nabla^2 h_1\left(x\right)\Big) \\
+       \vdots \\
+       \mathrm{row}_i\Big(\nabla^2 h_m\left(x\right)\Big) \\
+    \end{bmatrix}
+\end{flalign}
+We now can rewrite $dJ_h\left(x\right)$ as follows:
+\begin{flalign}
+    dJ_h\left(x\right) &=
+    \begin{bmatrix}
+       M_1\left(x\right) dx & \hdots & M_n\left(x\right) dx
+    \end{bmatrix}
+    \\
+    &= 
+    \begin{bmatrix}
+       M_1\left(x\right) & \hdots & M_n\left(x\right)
+    \end{bmatrix} dx \\
+    &= 
+    T_h\left(x\right) dx
+\end{flalign}
+Where $T_h\left(x\right) = \begin{bmatrix} M_1\left(x\right) & \hdots & M_n\left(x\right) \end{bmatrix}$.
+\section{Composition - Degenerate Case}
+Even though the following derivation is a private case of \ref{section:composition_general_case}, we include it as well for clarity. Given two smooth functions $f: \mathbb{R} \xrightarrow[]{} \mathbb{R}$ and $h: \mathbb{R}^n \xrightarrow[]{} \mathbb{R}$, we derive the gradient and Hessian of their composition $f \circ h\left(x\right)$.
 \subsection{Gradient}
 The differential of  $f\Big(h\left(x\right)\Big)$ is computed as follows:
 \begin{flalign}
@@ -116,6 +219,48 @@ By \ref{eq:composition_hessian} we get that the Hessian $\nabla^2 f\Big(h\left(x
 \begin{flalign}
 \nabla^2 f\Big(h\left(x\right)\Big) = f''\Big(h\left(x\right)\Big) \cdot \nabla h\left(x\right) \cdot \nabla h\left(x\right)^T + f'\Big(h\left(x\right)\Big) \cdot \nabla^2 h\left(x\right)
 \end{flalign}
+
+
+
+
+
+
+
+
+\section{Squared Norm}
+In this section, we derive the gradient and Hessian of the squared Euclidean norm $\norm{\cdot}_2^2: \mathbb{R}^n \xrightarrow[]{} \mathbb{R}$.
+\subsection{Gradient}
+The differential of $\norm{\cdot}_2^2$ is computed as follows:
+\begin{flalign}
+d\norm{x}_2^2 &= d\left(x^Tx\right) \\
+&= \left(dx\right)^Tx + x^Tdx \\
+&= x^Tdx + x^Tdx \\
+&= 2x^Tdx \\
+\label{eq:squared_norm_gradient}
+&= \left(2x\right)^Tdx
+\end{flalign}
+By \ref{eq:squared_norm_gradient} we get that the gradient $\nabla \norm{x}_2^2$ is given by:
+\begin{flalign}
+\nabla \norm{x}_2^2 = 2x
+\end{flalign}
+\subsection{Hessian}
+The differential of $\nabla \norm{\cdot}_2^2$ is computed as follows:
+\begin{flalign}
+d\norm{x}_2^2 &= d\left(x^Tx\right) \\
+&= \left(dx\right)^Tx + x^Tdx \\
+&= x^Tdx + x^Tdx \\
+&= 2x^Tdx \\
+\label{eq:squared_norm_gradient}
+&= \left(2x\right)^Tdx
+\end{flalign}
+By \ref{eq:squared_norm_gradient} we get that the gradient $\nabla \norm{x}_2^2$ is given by:
+\begin{flalign}
+\nabla \norm{x}_2^2 = 2x
+\end{flalign}
+
+
+
+
 \section{Angle Penalty Function}
 The angle penalty functions is given by:
 \begin{equation}\label{eq:angle_penalty}
@@ -236,3 +381,19 @@ By \ref{eq:hessian_alpha_angle} we get that the Hessian $\nabla^2 \alpha\left(u\
 Where $\nabla u_0 - \nabla u_1 = \left(1,-1,0,0,0,0,0,0\right)^T$ and $\nabla u_2 - \nabla u_3 = \left(0,0,1,-1,0,0,0,0\right)^T$, $\nabla \mathrm{atan2}\left(y,x\right) = \left(\frac{-y}{x^2+y^2}, \frac{x}{x^2 + y^2}\right)^T$. The second partial derivatives of $\mathrm{atan2}$ can be easily derived by hand.
 The Hessian $\nabla\beta\left(x\right)$ is derived in a similar way.
 \section{Length Penalty Function}
+We define the length penalty function $P_{length}$ as follows:
+\begin{equation}\label{length_penalty}
+\begin{split}
+P_{\mathrm{length}}\left(e_i,e_j\right) = \left(\norm{e_i}_2^2 - \norm{e_j}_2^2\right)^2
+\end{split}
+\end{equation}
+The length penalty measures the Euclidean length discrepancy between the two half-edges $e_i$ and $e_j$, where for $k \in \left\{i,j\right\}$, we have $e_k = \left(v^1_k, v^2_k\right)$ and therefore:
+\begin{flalign}
+\norm{e_k}_2^2 &= \left(v^2_k - v^1_k\right)^T\left(v^2_k - v^1_k\right) \\
+&= \Big(\mathrm{x}\left(v_k^2\right) - \mathrm{x}\left(v_k^1\right), \mathrm{y}\left(v_k^2\right) - \mathrm{y}\left(v_k^1\right) \Big)^T \Big(\mathrm{x}\left(v_k^2\right) - \mathrm{x}\left(v_k^1\right), \mathrm{y}\left(v_k^2\right) - \mathrm{y}\left(v_k^1\right) \Big)
+\end{flalign}
+\noindent By denoting:
+\begin{equation}\label{eq:angle_penalty}
+u = \Big(\mathrm{y}\left(v_i^2\right), \mathrm{y}\left(v_i^1\right), \mathrm{x}\left(v_i^2\right), \mathrm{x}\left(v_i^1\right), \mathrm{y}\left(v_j^2\right), \mathrm{y}\left(v_j^1\right), \mathrm{x}\left(v_j^2\right), \mathrm{x}\left(v_j^1\right)\Big)^T
+\end{equation}
+And by replacing the sine expression with a piece-wise polynomial periodic function $f_p$ with period $p=\frac{\pi}{2}$ (as defined in appendix \ref{appendix:a}), we can rewrite $P_{\mathrm{angle}}$ as follows:
