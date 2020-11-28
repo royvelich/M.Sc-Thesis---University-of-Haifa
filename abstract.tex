@@ -64,7 +64,7 @@ P_{\mathrm{translation}}\left(e_i,e_j\right) &= \sin\left(2\pi\left(x_{e_i} - x_
 \end{flalign}
 Where $\left(x_{e_i}, y_{e_i}\right)$ and $\left(x_{e_j}, y_{e_j}\right)$ are the coordinates of two twin-vertices of the two half-edges $e_i$ and $e_j$.
 \subsubsection{Singular-Points Penalty Function}
-To satisfy the singular-points condition, all twin-vertices on the parameterization domain have to lie on integer locations, if they correspond to a singular-points on the mesh surface. Therefore, we penalize singular points as follows:
+To satisfy the singular-points condition, all twin-vertices on the parameterization domain have to lie on integer locations, if they correspond to a singular-points on the mesh surface. Therefore, we penalize twin-vertices of singular points as follows:
 \begin{flalign}
 P_{\mathrm{singular}}\left(S\right) = \sum_{v \in S} \left( \sin\left(2 \pi x_{v} - \frac{\pi}{2} \right) + 1 + \sin\left(2 \pi y_{v} - \frac{\pi}{2} \right) + 1 \right)
 \end{flalign}
