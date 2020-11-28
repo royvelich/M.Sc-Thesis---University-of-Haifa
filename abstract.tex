@@ -43,40 +43,43 @@ Since all of our penalty functions are smooth, we can analytically derive their 
 
 \subsubsection{Details}
 \paragraph{Initialization}
-We cut the mesh by mapping its dual spanning tree to the parameterization plane isometrically as a triangle soup. We first map an arbitrary initial triangle to the parameterization plane. Then, we map to the plane all neighbour triangles of the initial triangle, such that adjacent triangles share an edge. We continue this process for the next layer of neighbours, till we map all of the mesh's triangles.
+We cut the input triangle-mesh open by isometrically mapping its dual spanning tree to the parameterization plane as a triangle-soup. We first map an arbitrary initial triangle to the parameterization plane. Next, we map to the plane all adjacent triangles of the initial triangle, such that adjacent triangles on the mesh surface share an edge on the 2D domain. We continue this process for the next layer of neighbours, till we map the whole input mesh.
 \subsubsection{Seamless Penalty Functions}
 \paragraph{Angle Penalty}
 Given two half-edges $e_i$ and $e_j$ on the parameterization domain that corresponds to the same surface edge, we penalize the angle between them as follows: 
-$$P_{\mathrm{angle}}\left(e_i,e_j\right) = \sin\left(4\left(\theta(e_i) - \theta(e_j) \right) - \frac{\pi}{2} \right) + 1$$
-Where $\theta(e_i)$ and $\theta(e_j)$ are the angles of the two half edges $e_i$ and $e_j$, respectively. For any $k \in \mathbb{Z}$ such that $\theta(e_i) - \theta(e_j) = \frac{\pi}{2}k$ we have that $P_{\mathrm{angle}}\left(e_i,e_j\right) = 0$. Therefore, $P_{\mathrm{angle}}$ will penalize half-edges of which their angle discrepancy differs from a multiple of $90^\circ$.
+\begin{flalign}
+P_{\mathrm{angle}}\left(e_i,e_j\right) = \sin\left(4\left(\theta(e_i) - \theta(e_j) \right) - \frac{\pi}{2} \right) + 1
+\end{flalign}
+Where $\theta(e_i)$ and $\theta(e_j)$ are the angles of the two half edges $e_i$ and $e_j$ with respect to the horizontal Cartesian isolines, respectively. For any $k \in \mathbb{Z}$ such that $\theta(e_i) - \theta(e_j) = \frac{\pi}{2}k$ we have that $P_{\mathrm{angle}}\left(e_i,e_j\right) = 0$. Therefore, $P_{\mathrm{angle}}$ will penalize half-edges of which their angle discrepancy differs from a multiple of $90^\circ$.
 \paragraph{Length Penalty}
 We penalize the length discrepancy between the two half-edges with the following penalty function:
-$$P_{\mathrm{length}}\left(e_i,e_j\right) = \left( \norm{e_i}^2 - \norm{e_j}^2 \right)^2$$
+\begin{flalign}
+P_{\mathrm{length}}\left(e_i,e_j\right) = \left( \norm{e_i}^2 - \norm{e_j}^2 \right)^2
+\end{flalign}
 Only when the two half-edges have the same length, we have that $P_{\mathrm{length}}\left(e_i,e_j\right) = 0$.
 \paragraph{Translation Penalty}
 We penalize for non-integer translation between the two half-edges as follows:
-\begin{multline}
-P_{\mathrm{translation}}\left(e_i,e_j\right) = \sin\left(2\pi\left(x_{e_i} - x_{e_j}\right) - \frac{\pi}{2} \right) + 1 \\ + \sin\left(2\pi\left(y_{e_i} - y_{e_j}\right) - \frac{\pi}{2} \right) + 1 \nonumber
-\end{multline}
-Where $\left(x_{e_i}, y_{e_i}\right)$ and $\left(x_{e_j}, y_{e_j}\right)$ are the coordinates of two corresponding vertices of the two half-edges $e_i$ and $e_j$.
+\begin{flalign}
+P_{\mathrm{translation}}\left(e_i,e_j\right) &= \sin\left(2\pi\left(x_{e_i} - x_{e_j}\right) - \frac{\pi}{2} \right) + 1 \\ & \quad + \sin\left(2\pi\left(y_{e_i} - y_{e_j}\right) - \frac{\pi}{2} \right) + 1 \notag
+\end{flalign}
+Where $\left(x_{e_i}, y_{e_i}\right)$ and $\left(x_{e_j}, y_{e_j}\right)$ are the coordinates of two twin-vertices of the two half-edges $e_i$ and $e_j$.
 \subsubsection{Singular-Points Penalty Function}
-To satisfy the singularity points condition, all vertices on the parameterization domain which correspond to the same vertex on the surface, have to lie on integer locations if they are characterized by a non-zero angle defect in the domain. Therefore, we penalize singular points as follows:
-\begin{multline}
-P_{\mathrm{singularity}}\left(S\right) = \sum_{u \in S} \left( \sin\left(2 \pi x_{u} - \frac{\pi}{2} \right) + 1 + \sin\left(2 \pi y_{u} - \frac{\pi}{2} \right) + 1 \right) \nonumber
-\end{multline}
-Where $S$ is a set of domain vertices with non-zero angle defect, which correspond to the same surface vertex, and $\left(x_u,y_u\right)$ are the coordinates of the domain vertex $u \in S$. We weight $P_{\mathrm{singularity}}$ by the magnitude of the angle defect.
+To satisfy the singular-points condition, all twin-vertices on the parameterization domain have to lie on integer locations, if they correspond to a singular-points on the mesh surface. Therefore, we penalize singular points as follows:
+\begin{flalign}
+P_{\mathrm{singular}}\left(S\right) = \sum_{v \in S} \left( \sin\left(2 \pi x_{v} - \frac{\pi}{2} \right) + 1 + \sin\left(2 \pi y_{v} - \frac{\pi}{2} \right) + 1 \right)
+\end{flalign}
+Where $S$ is a set of domain twin-vertices that correspond to a singular-point, and $\left(x_v,y_v\right)$ are the coordinates of domain vertex $v \in S$.
 \subsubsection{Consistent Orientation and Distortion Penalty Functions}
-To satisfy the consistent orientation condition, and to minimize triangle distortion, we use the symmetric dirichlet energy \cite{10.1145/2766947}, which prevents triangle flips. The symmetric dirichlet penalty function is given as follows:
-$$
-P_{\mathrm{dirichlet}}\left(t_i\right) = \norm{J\left(t_i\right)}_F^2 + \norm{J^{-1}\left(t_i\right)}_F^2 \nonumber
-$$
+To satisfy the consistent orientation condition, and to minimize triangle distortion, we use the symmetric dirichlet energy \cite{Smith:2015}, which prevents triangle flips and promotes isometric mappings. The symmetric dirichlet penalty function is given as follows:
+\begin{flalign}
+P_{\mathrm{dirichlet}}\left(t_i\right) = \norm{J\left(t_i\right)}_F^2 + \norm{J^{-1}\left(t_i\right)}_F^2
+\end{flalign}
 Where $J\left(t_i\right)$ is the Jacobian of the mapping of triangle $t_i$ and $\norm{\cdot}_F$ is the Frobenius norm.
 \subsubsection{Optimization Process}
 In order to find a parameterization which forms a valid quad mesh on the 3D surface, we solve the following unconstrained optimization problem:
-\begin{alignat}{2}
-  &\min_{X}
-     &\quad & \sum_{i \sim j} P_{\mathrm{angle}}\left(e_i,e_j\right) + P_{\mathrm{length}}\left(e_i,e_j\right) + P_{\mathrm{translation}}\left(e_i,e_j\right) \nonumber\\ 
-  &  &  & + \sum_{i} P_{\mathrm{singularity}}\left(S_i\right) \nonumber\\ 
-  &  &  & + \sum_{i} P_{\mathrm{dirichlet}}\left(t_i\right) \nonumber
-\end{alignat}
-Where $X$ denotes the set of variables of the optimization problem, i.e., the coordinates of the vertices in the parameterization domain. We derive the analytical expressions for the gradient and Hessian of each penalty function and make sure that all Hessians are positive semi-definite by zeroing negative eigenvalues. We solve the optimization problem using Newton's method. In iteration $n$, we evaluate the gradient $g^{(n)}$ and Hessian $H^{(n)}$ of our total objective function at $X^{(n)}$, and solve the Newton equation $H^{(n)}p^{(n)}=-g^{(n)}$ which yields a search direction $p^{(n)}$. The next iterate is obtained by $X^{(n+1)} = X^{(n)} + \alpha p^{(n)}$ where the optimal $\alpha$ is found using line search. We use Intel's Pardiso solver to solve the sparse Newton equation.
+\begin{flalign}
+\min_{X} & \quad \sum_{i \sim j} \Big( P_{\mathrm{angle}}\left(e_i,e_j\right) + P_{\mathrm{length}}\left(e_i,e_j\right) + P_{\mathrm{translation}}\left(e_i,e_j\right) \Big) \\
+ & + \sum_{i} P_{\mathrm{singular}}\left(S_i\right) \notag \\
+ & + \sum_{i} P_{\mathrm{dirichlet}}\left(t_i\right) \notag
+\end{flalign}
+Where $X$ denotes the set of variables of the optimization problem, i.e., the coordinates of the vertices in the parameterization domain. We derive analytical expressions for the gradient and Hessian of each penalty function, and modify the computed Hessians to be positive-definite if necessary (by using singular-value decomposition and eliminating negative singular values). We solve the optimization problem using Newton's method. In iteration $i$, we evaluate the gradient $g^{(i)}$ and Hessian $H^{(i)}$ of our total objective function at $X^{(i)}$, and solve the Newton equation $H^{(i)}d^{(i)}=-g^{(i)}$ which yields a search direction $d^{(n)}$. The next iterate is obtained by $X^{(i+1)} = X^{(i)} + \alpha p^{(i)}$ where the optimal $\alpha$ is found using line search. We use Intel's MKL PARDISO solver to solve the sparse linear system of equations induced by the Newton's method.

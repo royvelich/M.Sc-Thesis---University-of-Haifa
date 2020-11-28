@@ -292,7 +292,7 @@ d\nabla \delta_{i,j}\left(u\right) &= d\left(u_i - u_j\right) \\
 \label{delta_gradient}
 &= \left(\nabla u_i - \nabla u_j\right) dx
 \end{flalign}
-Where $\nabla u_i$ and $\nabla u_j$ are one-hot vectors with 1 at index $i$ and $j$, respectively. By \ref{delta_gradient}, the gradient $\nabla \delta_{i,j}\left(u\right)$ is given by:
+Where $\nabla u_i$ and $\nabla u_j$ are \href{https://en.wikipedia.org/wiki/One-hot}{one-hot} vectors with 1 at index $i$ and $j$, respectively. By \ref{delta_gradient}, the gradient $\nabla \delta_{i,j}\left(u\right)$ is given by:
 \begin{flalign}
 \nabla \delta_{i,j}\left(u\right) = \nabla u_i - \nabla u_j
 \end{flalign}
@@ -363,6 +363,9 @@ And by replacing the sine expression with a piece-wise polynomial periodic funct
 \begin{flalign}
 P_{\mathrm{singular}}\left(u\right) = \sum_{i = 0}^{\abs{S} - 1} f_1\Big(\sigma_i\left(u\right)\Big)
 \end{flalign}
-Where $\sigma_i\left(u\right) = u_i$. Obviously, $\nabla \sigma_i\left(u\right)$ is the one-hot vector with 1 at index $i$, and $\nabla^2 \sigma_i\left(u\right) = 0$.
+Where $\sigma_i\left(u\right) = u_i$. Obviously, $\nabla \sigma_i\left(u\right)$ is the \href{https://en.wikipedia.org/wiki/One-hot}{one-hot} vector with 1 at index $i$, and $\nabla^2 \sigma_i\left(u\right) = 0$.
 
 \noindent Since we already know how to calculate the first and second derivatives of $f_1$ (section \ref{section:piecewise_periodic_polynomial}),  the gradient and Hessian of $\sigma{i}\left(u\right)$, and we also know to calculate the gradient and Hessian of general composition of functions (section \ref{section:composition_general_case}), we immediately know how to calculate $\nabla P_{\mathrm{singular}}\left(u\right)$ and $\nabla^2 P_{\mathrm{singular}}\left(u\right)$.
+
+\section{Symmetric Dirichlet Penalty Function}
+For explicit expression of the symmetric dirichlet function and its derivatives, please refer to \ref{Smith:2015}.
