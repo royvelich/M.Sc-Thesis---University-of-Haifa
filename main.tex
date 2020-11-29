@@ -35,6 +35,13 @@
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{mathtools}
+\usepackage{afterpage}
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
 
 \usepackage{hyperref}
 \hypersetup{
@@ -84,20 +91,50 @@
 
 \begin{document}
 
-\include{cover}
+% \include{cover}
 % Some departments (e.g. 5) require an additional signature page.  See
 % signature.tex for more information and uncomment the following line if
 % applicable.
 % \include{signature}
 \pagestyle{plain}
-\include{contents}
+\pagenumbering{roman}
+\setcounter{page}{3}
+
+\chapter*{Acknowledgments}
+
+
+\let\cleardoublepage\clearpage
+\tableofcontents
+
+\cleardoublepage
+\phantomsection
+
+\addcontentsline{toc}{chapter}{Abstract}
+\include{abstract_wrapper}
+\phantomsection
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+
+\cleardoublepage
+\blankpage
+
+\pagenumbering{arabic}
 \include{chapter1_scientific_background}
+\blankpage
 \include{chapter2_research_motivation}
+\blankpage
 \include{chapter3_related_work}
+\blankpage
 \include{chapter4_method}
+\blankpage
 \include{chapter5_results}
+\blankpage
 \include{chapter6_conclusion}
+\blankpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\include{biblio}
+\blankpage
 \appendix
 \include{appendix}
-\include{biblio}
 \end{document}
